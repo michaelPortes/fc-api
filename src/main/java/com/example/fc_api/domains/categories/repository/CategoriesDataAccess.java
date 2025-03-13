@@ -23,4 +23,16 @@ public class CategoriesDataAccess {
 
         return CategoriesModel.fromEntity(createEntity);
     }
+
+
+    public CategoriesModel deleteCategory(Long categoriesModel) throws ModelViolationException{
+        CategoriesEntity categoriesEntity;
+
+        categoriesEntity = CategoriesEntity.builder().build();
+        categoriesEntity.deleteCategory(categoriesModel);
+
+        categoriesRepository.delete(categoriesEntity);
+
+        return CategoriesModel.deleteCategory(categoriesModel);
+    }
 }

@@ -10,10 +10,7 @@ import com.example.fc_api.domains.categories.presentation.CategoriesDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -36,5 +33,16 @@ public class DashboardController {
         var categoriesInsert = categoriesUseCases.insertCategories(insertCategoriesDTO);
 
         return new ResponseBuilder<CategoriesDTO>(HttpStatusCode.valueOf(200), categoriesInsert).build();
+    }
+
+    @DeleteMapping("/category/delete")
+    private ResponseEntity<ResponseBody<CategoriesDTO>> deleteCategories(
+            @RequestParam(value = "id", required = true) Long id
+    ) throws ModelViolationException {
+
+
+        var deleteCategory = categoriesUseCases.deleteCategory(id);
+
+        return new ResponseBuilder<CategoriesDTO>(HttpStatusCode.valueOf(200), deleteCategory).build();
     }
 }

@@ -27,5 +27,9 @@ public class CategoriesEntity{
         this.name = categoriesModel.getName();
 
     }
+
+    public void deleteCategory(Long idToDelete){
+        this.id = idToDelete;
+    }
 }
 
