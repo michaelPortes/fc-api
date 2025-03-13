@@ -1,0 +1,44 @@
+services:
+  fc-api:
+    container_name: fc-api
+    build: .
+    ports:
+      - "8081:8080"
+    networks:
+      - fc-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://fc-db:5432/fc
+      SPRING_DATASOURCE_USERNAME: puser
+      SPRING_DATASOURCE_PASSWORD: psqlpassword
+    depends_on:
+      fc-db:
+        condition: service_healthy
+
+  fc-db:
+    container_name: fc-db
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    networks:
+      - fc-network
+    volumes:
+      - type: volume
+        source: fc-volume
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: psqlpassword
+      POSTGRES_USER: puser
+      POSTGRES_DB: fc
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U puser -d fc"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  fc-volume:
+
+networks:
+  fc-network:
+    name: fc-network
+    driver: bridge
