@@ -21,4 +21,11 @@ public class CategoriesUseCases {
 
         return CategoriesDTO.fromModel(categoriesModel).toBuilder().build();
     }
+
+    public CategoriesDTO deleteCategory(Long deleteCategory) throws ModelViolationException{
+
+        var delete = categoriesDataAccess.deleteCategory(deleteCategory);
+
+        return CategoriesDTO.fromModel(delete).toBuilder().build();
+    }
 }
