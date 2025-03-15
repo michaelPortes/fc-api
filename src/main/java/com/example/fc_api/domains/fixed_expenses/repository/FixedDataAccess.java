@@ -2,6 +2,7 @@ package com.example.fc_api.domains.fixed_expenses.repository;
 
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.fixed_expenses.model.FixedModel;
+import com.example.fc_api.domains.fixed_expenses.presentation.FixedDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +12,10 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class FixedDataAccess {
+
     private final FixedRepository fixedRepository;
 
-    public List<FixedModel> getFixedList(LocalDate currentDate){
+    public List<FixedModel> getFixedList(LocalDate currentDate) throws ModelViolationException{
         return fixedRepository.getFixedList(currentDate).stream().map(entity -> {
             try {
                 return FixedModel.fromEntity(entity);

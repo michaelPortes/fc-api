@@ -29,16 +29,24 @@ public class FixedEntity {
     @NotNull
     private String name;
 
-    @NotNull
     private String description;
 
     @NotNull
-    private Long value;
+    @Column(name = "expected_expense")
+    private Long expectedExpense;
 
-    @JoinColumn(name = "category")
+    @Column(name = "real_expense_middle_month")
+    private Long realExpenseMiddleMonth;
+
+    @Column(name = "real_expense_final_month")
+    private Long realExpenseFinalMonth;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     private CategoriesEntity category;
 
     @NotNull
+    @Column(name = "reference_date ")
     private LocalDate currentDate;
 
 }

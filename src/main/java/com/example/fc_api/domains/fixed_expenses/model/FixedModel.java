@@ -16,13 +16,15 @@ public class FixedModel {
     private Long id;
     private String name;
     private String description;
-    private Long value;
+    private Long expectedExpense;
+    private Long realExpenseMiddleMonth;
+    private Long realExpenseFinalMonth;
     private CategoriesModel category;
     private LocalDate currentDate;
 
     public static class FixedModelBuilder {
         public FixedModel build()  {
-            var fixedModel = new FixedModel(id, name, description, value, category, currentDate);
+            var fixedModel = new FixedModel(id, name, description, expectedExpense, realExpenseMiddleMonth, realExpenseFinalMonth, category, currentDate);
             validate(fixedModel);
             return fixedModel;
         }
@@ -37,7 +39,9 @@ public class FixedModel {
                 .id(fixedEntity.getId())
                 .name(fixedEntity.getName())
                 .description(fixedEntity.getDescription())
-                .value(fixedEntity.getValue())
+                .expectedExpense(fixedEntity.getExpectedExpense())
+                .realExpenseMiddleMonth(fixedEntity.getRealExpenseMiddleMonth())
+                .realExpenseFinalMonth(fixedEntity.getRealExpenseFinalMonth())
                 .category(CategoriesModel.fromEntity(fixedEntity.getCategory()))
                 .currentDate(fixedEntity.getCurrentDate())
                 .build();

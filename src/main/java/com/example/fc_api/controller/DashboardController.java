@@ -7,10 +7,15 @@ import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.CategoriesUseCases;
 import com.example.fc_api.domains.categories.input.InsertCategoriesDTO;
 import com.example.fc_api.domains.categories.presentation.CategoriesDTO;
+import com.example.fc_api.domains.fixed_expenses.FixedUseCases;
+import com.example.fc_api.domains.fixed_expenses.presentation.FixedDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 
 @RestController
@@ -20,13 +25,14 @@ public class DashboardController {
 
     private final CategoriesUseCases categoriesUseCases;
 
+    private final FixedUseCases fixedUseCases;
+
     @PostMapping("/categories")
     private ResponseEntity<ResponseBody<CategoriesDTO>> insertCategories(
             @RequestBody CategoriesPostParam categoriesPostParam
             ) throws ModelViolationException {
 
         var insertCategoriesDTO = InsertCategoriesDTO.builder()
-                .id(categoriesPostParam.getId())
                 .name(categoriesPostParam.getName())
                 .build();
 
@@ -44,5 +50,15 @@ public class DashboardController {
         var deleteCategory = categoriesUseCases.deleteCategory(id);
 
         return new ResponseBuilder<CategoriesDTO>(HttpStatusCode.valueOf(200), deleteCategory).build();
+    }
+
+    @GetMapping("/fixed/list")
+    public ResponseEntity<ResponseBody<List<FixedDTO>>>  getFixedList(
+            @RequestParam(value = "currentDate", required = true) LocalDate currentDate
+            ) throws ModelViolationException{
+
+        var responseData = fixedUseCases.getFixedList(currentDate);
+
+        return new ResponseBuilder<List<FixedDTO>>(HttpStatusCode.valueOf(200), responseData).build();
     }
 }
