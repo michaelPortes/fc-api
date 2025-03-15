@@ -6,7 +6,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class InsertCategoriesDTO {
-
-    private Long id;
     private String name;
 }
