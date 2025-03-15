@@ -7,5 +7,6 @@
         <include file="db/migrations/v01-create-table-categories.sql"/>
         <include file="db/migrations/v02-create-table-users.sql"/>
         <include file="db/migrations/v03-create-table-launch.sql"/>
+        <include file="db/migrations/v04-create-table-fixed_expenses.sql"/>
 
 </databaseChangeLog>
