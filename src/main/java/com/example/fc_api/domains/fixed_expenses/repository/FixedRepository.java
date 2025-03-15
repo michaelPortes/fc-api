@@ -12,8 +12,8 @@ import java.util.Collection;
 public interface FixedRepository extends JpaRepository<FixedEntity, Long> {
 
     @Query(
-        value = "select * from fixed_expenses where reference_date = :#{#currentDate}",
-            nativeQuery = true
+            value = "select * from fixed_expenses where reference_date = :#{#currentDate}",
+                nativeQuery = true
     )
     public Collection<FixedEntity> getFixedList(LocalDate currentDate);
 }

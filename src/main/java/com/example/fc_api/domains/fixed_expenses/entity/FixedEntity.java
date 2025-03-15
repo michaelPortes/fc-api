@@ -3,12 +3,10 @@ package com.example.fc_api.domains.fixed_expenses.entity;
 
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
 import com.example.fc_api.domains.categories.model.CategoriesModel;
+import com.example.fc_api.domains.fixed_expenses.model.FixedModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
@@ -19,7 +17,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "fixed")
+@Table(name = "fixed_expenses")
+@Builder
 public class FixedEntity {
 
     @Id
@@ -48,5 +47,16 @@ public class FixedEntity {
     @NotNull
     @Column(name = "reference_date ")
     private LocalDate currentDate;
+
+    public void upsertFixed(FixedModel fixedModel){
+        this.name = fixedModel.getName();
+        this.description = fixedModel.getDescription();
+        this.expectedExpense = fixedModel.getExpectedExpense();
+        this.realExpenseMiddleMonth = fixedModel.getRealExpenseMiddleMonth();
+        this.realExpenseFinalMonth = fixedModel.getRealExpenseFinalMonth();
+        this.category = fixedModel.getCategory();
+        this.currentDate = fixedModel.getCurrentDate();
+
+    }
 
 }

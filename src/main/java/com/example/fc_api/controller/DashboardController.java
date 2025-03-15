@@ -3,11 +3,14 @@ package com.example.fc_api.controller;
 import com.example.fc_api.config.ResponseBody;
 import com.example.fc_api.config.ResponseBuilder;
 import com.example.fc_api.controller.param.CategoriesPostParam;
+import com.example.fc_api.controller.param.FixedPostParam;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.CategoriesUseCases;
+import com.example.fc_api.domains.categories.entity.CategoriesEntity;
 import com.example.fc_api.domains.categories.input.InsertCategoriesDTO;
 import com.example.fc_api.domains.categories.presentation.CategoriesDTO;
 import com.example.fc_api.domains.fixed_expenses.FixedUseCases;
+import com.example.fc_api.domains.fixed_expenses.input.InsertFixedDTO;
 import com.example.fc_api.domains.fixed_expenses.presentation.FixedDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
@@ -60,5 +63,30 @@ public class DashboardController {
         var responseData = fixedUseCases.getFixedList(currentDate);
 
         return new ResponseBuilder<List<FixedDTO>>(HttpStatusCode.valueOf(200), responseData).build();
+    }
+
+
+    @PostMapping("/fixed/insert")
+    public ResponseEntity<ResponseBody<FixedDTO>> insertFixed(
+            @RequestBody FixedPostParam fixedPostParam
+            ) throws ModelViolationException{
+
+        var fixedItem = InsertFixedDTO.builder()
+                .name(fixedPostParam.getName())
+                .description(fixedPostParam.getDescription())
+                .expectedExpense(fixedPostParam.getExpectedExpense())
+                .realExpenseMiddleMonth(fixedPostParam.getRealExpenseMiddleMonth())
+                .realExpenseFinalMonth(fixedPostParam.getRealExpenseFinalMonth())
+                .category(
+                        fixedPostParam.getCategory() != null ?
+                                CategoriesEntity.builder().id(fixedPostParam.getCategory().getId()).build() :
+                                null // Ensure it's not null
+                )
+                .currentDate(fixedPostParam.getCurrentDate())
+                .build();
+
+        var responseDate = fixedUseCases.insertFixed(fixedItem);
+
+        return new ResponseBuilder<FixedDTO>(HttpStatusCode.valueOf(200), responseDate).build();
     }
 }

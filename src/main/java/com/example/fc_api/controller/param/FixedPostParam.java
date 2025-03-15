@@ -1,4 +1,4 @@
-package com.example.fc_api.domains.fixed_expenses.input;
+package com.example.fc_api.controller.param;
 
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
 import lombok.Builder;
@@ -7,8 +7,8 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-@Builder(toBuilder = true)
-public class InsertFixedDTO {
+@Builder
+public class FixedPostParam {
     private String name;
     private String description;
     private Long expectedExpense;

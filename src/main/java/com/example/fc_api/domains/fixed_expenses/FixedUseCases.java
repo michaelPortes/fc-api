@@ -1,6 +1,8 @@
 package com.example.fc_api.domains.fixed_expenses;
 
 import com.example.fc_api.custon.exception.ModelViolationException;
+import com.example.fc_api.domains.fixed_expenses.input.InsertFixedDTO;
+import com.example.fc_api.domains.fixed_expenses.model.FixedModel;
 import com.example.fc_api.domains.fixed_expenses.presentation.FixedDTO;
 import com.example.fc_api.domains.fixed_expenses.repository.FixedDataAccess;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +29,13 @@ public class FixedUseCases {
                     .realExpenseFinalMonth(entity.getRealExpenseFinalMonth())
                     .build()
         ).toList();
+    }
+
+    public FixedDTO insertFixed(InsertFixedDTO insert) throws ModelViolationException{
+
+        var fixed = FixedModel.fromInputFixed(insert);
+        var responseData = fixedDataAccess.upsertFixed(fixed);
+
+        return FixedDTO.fromModel(responseData).toBuilder().build();
     }
 }
