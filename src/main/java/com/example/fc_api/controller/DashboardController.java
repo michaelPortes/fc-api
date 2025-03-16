@@ -45,7 +45,7 @@ public class DashboardController {
     }
 
     @DeleteMapping("/category/delete")
-    private ResponseEntity<ResponseBody<CategoriesDTO>> deleteCategories(
+    private ResponseEntity<ResponseBody<CategoriesDTO>> deleteCategory(
             @RequestParam(value = "id", required = true) Long id
     ) throws ModelViolationException {
 
@@ -88,5 +88,16 @@ public class DashboardController {
         var responseDate = fixedUseCases.insertFixed(fixedItem);
 
         return new ResponseBuilder<FixedDTO>(HttpStatusCode.valueOf(200), responseDate).build();
+    }
+
+    @DeleteMapping("/fixed/delete")
+    private ResponseEntity<ResponseBody<FixedDTO>> deleteFixed(
+            @RequestParam(value = "id", required = true) Long id
+    ) throws ModelViolationException {
+
+
+        var deleteFixed = fixedUseCases.deleteFixed(id);
+
+        return new ResponseBuilder<FixedDTO>(HttpStatusCode.valueOf(200), deleteFixed).build();
     }
 }

@@ -1,6 +1,10 @@
 package com.example.fc_api.domains.fixed_expenses;
 
 import com.example.fc_api.custon.exception.ModelViolationException;
+import com.example.fc_api.domains.categories.entity.CategoriesEntity;
+import com.example.fc_api.domains.categories.model.CategoriesModel;
+import com.example.fc_api.domains.categories.presentation.CategoriesDTO;
+import com.example.fc_api.domains.fixed_expenses.entity.FixedEntity;
 import com.example.fc_api.domains.fixed_expenses.input.InsertFixedDTO;
 import com.example.fc_api.domains.fixed_expenses.model.FixedModel;
 import com.example.fc_api.domains.fixed_expenses.presentation.FixedDTO;
@@ -14,6 +18,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class FixedUseCases {
+
     private final FixedDataAccess fixedDataAccess;
 
     public List<FixedDTO> getFixedList(LocalDate currentMonth) throws ModelViolationException {
@@ -38,4 +43,12 @@ public class FixedUseCases {
 
         return FixedDTO.fromModel(responseData).toBuilder().build();
     }
+
+   public FixedDTO deleteFixed(Long fixedModel) throws ModelViolationException{
+
+        var delete = fixedDataAccess.deleteFixed(fixedModel);
+
+        return FixedDTO.fromModel(delete).toBuilder().build();
+
+   }
 }

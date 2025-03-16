@@ -59,4 +59,8 @@ public class FixedEntity {
 
     }
 
+    public void deleteFixed(Long id){
+        this.id = id;
+    }
+
 }

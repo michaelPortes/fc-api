@@ -60,4 +60,10 @@ public class FixedModel {
                 .build();
 
     }
+
+    public static FixedModel deleteFixed(Long delete) throws ModelViolationException{
+        return FixedModel.builder()
+                .id(delete)
+                .build();
+    }
 }

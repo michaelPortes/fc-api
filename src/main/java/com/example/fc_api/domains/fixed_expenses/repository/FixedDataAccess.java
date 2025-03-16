@@ -36,4 +36,16 @@ public class FixedDataAccess {
 
         return FixedModel.fromEntity(createFixed);
     }
+
+    public FixedModel deleteFixed(Long id) throws ModelViolationException{
+
+        FixedEntity fixedEntity;
+
+        fixedEntity = FixedEntity.builder().build();
+        fixedEntity.deleteFixed(id);
+
+        fixedRepository.delete(fixedEntity);
+
+        return FixedModel.deleteFixed(id);
+    }
 }
