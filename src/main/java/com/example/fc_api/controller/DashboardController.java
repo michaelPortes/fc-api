@@ -4,6 +4,7 @@ import com.example.fc_api.config.ResponseBody;
 import com.example.fc_api.config.ResponseBuilder;
 import com.example.fc_api.controller.param.CategoriesPostParam;
 import com.example.fc_api.controller.param.FixedPostParam;
+import com.example.fc_api.controller.param.VariablePostParam;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.CategoriesUseCases;
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
@@ -12,6 +13,9 @@ import com.example.fc_api.domains.categories.presentation.CategoriesDTO;
 import com.example.fc_api.domains.fixed_expenses.FixedUseCases;
 import com.example.fc_api.domains.fixed_expenses.input.InsertFixedDTO;
 import com.example.fc_api.domains.fixed_expenses.presentation.FixedDTO;
+import com.example.fc_api.domains.variable_expenses.VariableUseCases;
+import com.example.fc_api.domains.variable_expenses.input.InsertVariableDTO;
+import com.example.fc_api.domains.variable_expenses.presentation.VariableDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +33,8 @@ public class DashboardController {
     private final CategoriesUseCases categoriesUseCases;
 
     private final FixedUseCases fixedUseCases;
+
+    private final VariableUseCases variableUseCases;
 
     @PostMapping("/categories")
     private ResponseEntity<ResponseBody<CategoriesDTO>> insertCategories(
@@ -100,4 +106,50 @@ public class DashboardController {
 
         return new ResponseBuilder<FixedDTO>(HttpStatusCode.valueOf(200), deleteFixed).build();
     }
+
+    @GetMapping("/variable/list")
+    public ResponseEntity<ResponseBody<List<VariableDTO>>>  getVariableList(
+            @RequestParam(value = "currentDate", required = true) LocalDate currentDate
+    ) throws ModelViolationException{
+
+        var responseData = variableUseCases.getVariableList(currentDate);
+
+        return new ResponseBuilder<List<VariableDTO>>(HttpStatusCode.valueOf(200), responseData).build();
+    }
+
+    @PostMapping("/variable/insert")
+    public ResponseEntity<ResponseBody<VariableDTO>> insertVariable(
+            @RequestBody VariablePostParam variablePostParam
+    ) throws ModelViolationException{
+
+        var variableItem = InsertVariableDTO.builder()
+                .name(variablePostParam.getName())
+                .description(variablePostParam.getDescription())
+                .expectedExpense(variablePostParam.getExpectedExpense())
+                .realExpenseMiddleMonth(variablePostParam.getRealExpenseMiddleMonth())
+                .realExpenseFinalMonth(variablePostParam.getRealExpenseFinalMonth())
+                .category(
+                        variablePostParam.getCategory() != null ?
+                                CategoriesEntity.builder().id(variablePostParam.getCategory().getId()).build() :
+                                null
+                )
+                .currentDate(variablePostParam.getCurrentDate())
+                .build();
+
+        var responseDate = variableUseCases.insertVariable(variableItem);
+
+        return new ResponseBuilder<VariableDTO>(HttpStatusCode.valueOf(200), responseDate).build();
+    }
+
+    @DeleteMapping("/variable/delete")
+    private ResponseEntity<ResponseBody<VariableDTO>> deleteVariable(
+            @RequestParam(value = "id", required = true) Long id
+    ) throws ModelViolationException {
+
+
+        var deleteVariable = variableUseCases.deleteVariable(id);
+
+        return new ResponseBuilder<VariableDTO>(HttpStatusCode.valueOf(200), deleteVariable).build();
+    }
+
 }
