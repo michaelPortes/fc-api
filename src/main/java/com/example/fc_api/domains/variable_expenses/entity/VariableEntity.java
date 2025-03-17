@@ -1,8 +1,8 @@
-package com.example.fc_api.domains.fixed_expenses.entity;
+package com.example.fc_api.domains.variable_expenses.entity;
 
 
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
-import com.example.fc_api.domains.fixed_expenses.model.FixedModel;
+import com.example.fc_api.domains.variable_expenses.model.VariableModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -16,9 +16,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "fixed_expenses")
+@Table(name = "variable_expenses")
 @Builder
-public class FixedEntity {
+public class VariableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +47,7 @@ public class FixedEntity {
     @Column(name = "reference_date ")
     private LocalDate currentDate;
 
-    public void upsertFixed(FixedModel fixedModel){
+    public void upsertVariable(VariableModel fixedModel){
         this.name = fixedModel.getName();
         this.description = fixedModel.getDescription();
         this.expectedExpense = fixedModel.getExpectedExpense();
@@ -58,7 +58,7 @@ public class FixedEntity {
 
     }
 
-    public void deleteFixed(Long id){
+    public void deleteVariable(Long id){
         this.id = id;
     }
 

@@ -14,6 +14,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class FixedUseCases {
+
     private final FixedDataAccess fixedDataAccess;
 
     public List<FixedDTO> getFixedList(LocalDate currentMonth) throws ModelViolationException {
@@ -38,4 +39,12 @@ public class FixedUseCases {
 
         return FixedDTO.fromModel(responseData).toBuilder().build();
     }
+
+   public FixedDTO deleteFixed(Long fixedModel) throws ModelViolationException{
+
+        var delete = fixedDataAccess.deleteFixed(fixedModel);
+
+        return FixedDTO.fromModel(delete).toBuilder().build();
+
+   }
 }
