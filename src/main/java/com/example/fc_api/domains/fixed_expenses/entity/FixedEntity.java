@@ -2,7 +2,6 @@ package com.example.fc_api.domains.fixed_expenses.entity;
 
 
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
-import com.example.fc_api.domains.categories.model.CategoriesModel;
 import com.example.fc_api.domains.fixed_expenses.model.FixedModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

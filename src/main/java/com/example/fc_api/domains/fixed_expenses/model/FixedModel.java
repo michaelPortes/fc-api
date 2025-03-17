@@ -3,7 +3,6 @@ package com.example.fc_api.domains.fixed_expenses.model;
 
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
-import com.example.fc_api.domains.categories.model.CategoriesModel;
 import com.example.fc_api.domains.fixed_expenses.entity.FixedEntity;
 import com.example.fc_api.domains.fixed_expenses.input.InsertFixedDTO;
 import lombok.Builder;
