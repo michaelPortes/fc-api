@@ -4,6 +4,7 @@ import com.example.fc_api.config.ResponseBody;
 import com.example.fc_api.config.ResponseBuilder;
 import com.example.fc_api.controller.param.CategoriesPostParam;
 import com.example.fc_api.controller.param.FixedPostParam;
+import com.example.fc_api.controller.param.SalaryPostParam;
 import com.example.fc_api.controller.param.VariablePostParam;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.CategoriesUseCases;
@@ -13,6 +14,9 @@ import com.example.fc_api.domains.categories.presentation.CategoriesDTO;
 import com.example.fc_api.domains.fixed_expenses.FixedUseCases;
 import com.example.fc_api.domains.fixed_expenses.input.InsertFixedDTO;
 import com.example.fc_api.domains.fixed_expenses.presentation.FixedDTO;
+import com.example.fc_api.domains.salary.SalaryUseCases;
+import com.example.fc_api.domains.salary.input.InsertSalaryDTO;
+import com.example.fc_api.domains.salary.presentation.SalaryDTO;
 import com.example.fc_api.domains.variable_expenses.VariableUseCases;
 import com.example.fc_api.domains.variable_expenses.input.InsertVariableDTO;
 import com.example.fc_api.domains.variable_expenses.presentation.VariableDTO;
@@ -35,6 +39,8 @@ public class DashboardController {
     private final FixedUseCases fixedUseCases;
 
     private final VariableUseCases variableUseCases;
+
+    private final SalaryUseCases salaryUseCases;
 
     @PostMapping("/categories")
     private ResponseEntity<ResponseBody<CategoriesDTO>> insertCategories(
@@ -150,6 +156,42 @@ public class DashboardController {
         var deleteVariable = variableUseCases.deleteVariable(id);
 
         return new ResponseBuilder<VariableDTO>(HttpStatusCode.valueOf(200), deleteVariable).build();
+    }
+
+    @GetMapping("/salary")
+    public ResponseEntity<ResponseBody<List<SalaryDTO>>> getSalaryList(
+            @RequestParam(value = "currentDate", required = true) LocalDate currentDate
+    ) throws ModelViolationException{
+
+        var responseData = salaryUseCases.getSalaryList(currentDate);
+
+        return new ResponseBuilder<List<SalaryDTO>>(HttpStatusCode.valueOf(200), responseData).build();
+    }
+
+    @PostMapping("/salary/insert")
+    public ResponseEntity<ResponseBody<SalaryDTO>> insertSalary(
+            @RequestBody SalaryPostParam salaryPostParam
+    ) throws ModelViolationException{
+
+        var variableItem = InsertSalaryDTO.builder()
+                .salary(salaryPostParam.getSalary())
+                .currentDate(salaryPostParam.getCurrentDate())
+                .build();
+
+        var responseDate = salaryUseCases.insertSalary(variableItem);
+
+        return new ResponseBuilder<SalaryDTO>(HttpStatusCode.valueOf(200), responseDate).build();
+    }
+
+    @DeleteMapping("/salary/delete")
+    private ResponseEntity<ResponseBody<SalaryDTO>> deleteSalary(
+            @RequestParam(value = "id", required = true) Long id
+    ) throws ModelViolationException {
+
+
+        var deleteVariable = salaryUseCases.deleteSalary(id);
+
+        return new ResponseBuilder<SalaryDTO>(HttpStatusCode.valueOf(200), deleteVariable).build();
     }
 
 }
