@@ -9,5 +9,6 @@
         <include file="db/migrations/v03-create-table-launch.sql"/>
         <include file="db/migrations/v04-create-table-fixed_expenses.sql"/>
         <include file="db/migrations/v05-create-table-variable_expenses.sql"/>
+        <include file="db/migrations/v06-create-table-salary.sql"/>
 
 </databaseChangeLog>

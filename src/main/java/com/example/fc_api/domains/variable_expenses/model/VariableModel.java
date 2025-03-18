@@ -31,7 +31,7 @@ public class VariableModel {
         }
     }
 
-    public static void validate(VariableModel fixedModel){
+    public static void validate(VariableModel variableModel){
         // Implement validate;
     }
 
