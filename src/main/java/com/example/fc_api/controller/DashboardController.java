@@ -3,23 +3,20 @@ package com.example.fc_api.controller;
 import com.example.fc_api.config.ResponseBody;
 import com.example.fc_api.config.ResponseBuilder;
 import com.example.fc_api.controller.param.CategoriesPostParam;
-import com.example.fc_api.controller.param.FixedPostParam;
+import com.example.fc_api.controller.param.ExpensesPostParam;
 import com.example.fc_api.controller.param.SalaryPostParam;
-import com.example.fc_api.controller.param.VariablePostParam;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.CategoriesUseCases;
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
 import com.example.fc_api.domains.categories.input.InsertCategoriesDTO;
 import com.example.fc_api.domains.categories.presentation.CategoriesDTO;
-import com.example.fc_api.domains.fixed_expenses.FixedUseCases;
-import com.example.fc_api.domains.fixed_expenses.input.InsertFixedDTO;
-import com.example.fc_api.domains.fixed_expenses.presentation.FixedDTO;
+import com.example.fc_api.domains.common.model.CommonUseCases;
+import com.example.fc_api.domains.expenses.ExpensesUseCases;
+import com.example.fc_api.domains.expenses.input.InsertExpenseDTO;
+import com.example.fc_api.domains.expenses.presentation.ExpenseDTO;
 import com.example.fc_api.domains.salary.SalaryUseCases;
 import com.example.fc_api.domains.salary.input.InsertSalaryDTO;
 import com.example.fc_api.domains.salary.presentation.SalaryDTO;
-import com.example.fc_api.domains.variable_expenses.VariableUseCases;
-import com.example.fc_api.domains.variable_expenses.input.InsertVariableDTO;
-import com.example.fc_api.domains.variable_expenses.presentation.VariableDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +33,11 @@ public class DashboardController {
 
     private final CategoriesUseCases categoriesUseCases;
 
-    private final FixedUseCases fixedUseCases;
-
-    private final VariableUseCases variableUseCases;
+    private final ExpensesUseCases fixedUseCases;
 
     private final SalaryUseCases salaryUseCases;
+
+    private final CommonUseCases commonUseCases;
 
     @PostMapping("/categories")
     private ResponseEntity<ResponseBody<CategoriesDTO>> insertCategories(
@@ -67,23 +64,26 @@ public class DashboardController {
         return new ResponseBuilder<CategoriesDTO>(HttpStatusCode.valueOf(200), deleteCategory).build();
     }
 
-    @GetMapping("/fixed/list")
-    public ResponseEntity<ResponseBody<List<FixedDTO>>>  getFixedList(
-            @RequestParam(value = "currentDate", required = true) LocalDate currentDate
+    @GetMapping("/expense/list")
+    public ResponseEntity<ResponseBody<List<ExpenseDTO>>>  getFixedList(
+            @RequestParam(value = "currentDate", required = false) LocalDate currentDate,
+            @RequestParam(value = "enumType", required = true) String enumType
             ) throws ModelViolationException{
 
-        var responseData = fixedUseCases.getFixedList(currentDate);
+        var date = commonUseCases.getReferenceDate(currentDate);
 
-        return new ResponseBuilder<List<FixedDTO>>(HttpStatusCode.valueOf(200), responseData).build();
+        var responseData = fixedUseCases.getExpensesList(date, enumType);
+
+        return new ResponseBuilder<List<ExpenseDTO>>(HttpStatusCode.valueOf(200), responseData).build();
     }
 
 
-    @PostMapping("/fixed/insert")
-    public ResponseEntity<ResponseBody<FixedDTO>> insertFixed(
-            @RequestBody FixedPostParam fixedPostParam
+    @PostMapping("/expense/insert")
+    public ResponseEntity<ResponseBody<ExpenseDTO>> insertFixed(
+            @RequestBody ExpensesPostParam fixedPostParam
             ) throws ModelViolationException{
 
-        var fixedItem = InsertFixedDTO.builder()
+        var fixedItem = InsertExpenseDTO.builder()
                 .name(fixedPostParam.getName())
                 .description(fixedPostParam.getDescription())
                 .expectedExpense(fixedPostParam.getExpectedExpense())
@@ -95,75 +95,32 @@ public class DashboardController {
                                 null // Ensure it's not null
                 )
                 .currentDate(fixedPostParam.getCurrentDate())
+                .type(fixedPostParam.getType())
                 .build();
 
-        var responseDate = fixedUseCases.insertFixed(fixedItem);
+        var responseDate = fixedUseCases.insertExpenses(fixedItem);
 
-        return new ResponseBuilder<FixedDTO>(HttpStatusCode.valueOf(200), responseDate).build();
+        return new ResponseBuilder<ExpenseDTO>(HttpStatusCode.valueOf(200), responseDate).build();
     }
 
-    @DeleteMapping("/fixed/delete")
-    private ResponseEntity<ResponseBody<FixedDTO>> deleteFixed(
+    @DeleteMapping("/expense/delete")
+    private ResponseEntity<ResponseBody<ExpenseDTO>> deleteFixed(
             @RequestParam(value = "id", required = true) Long id
     ) throws ModelViolationException {
 
 
-        var deleteFixed = fixedUseCases.deleteFixed(id);
+        var deleteFixed = fixedUseCases.deleteExpenses(id);
 
-        return new ResponseBuilder<FixedDTO>(HttpStatusCode.valueOf(200), deleteFixed).build();
-    }
-
-    @GetMapping("/variable/list")
-    public ResponseEntity<ResponseBody<List<VariableDTO>>>  getVariableList(
-            @RequestParam(value = "currentDate", required = true) LocalDate currentDate
-    ) throws ModelViolationException{
-
-        var responseData = variableUseCases.getVariableList(currentDate);
-
-        return new ResponseBuilder<List<VariableDTO>>(HttpStatusCode.valueOf(200), responseData).build();
-    }
-
-    @PostMapping("/variable/insert")
-    public ResponseEntity<ResponseBody<VariableDTO>> insertVariable(
-            @RequestBody VariablePostParam variablePostParam
-    ) throws ModelViolationException{
-
-        var variableItem = InsertVariableDTO.builder()
-                .name(variablePostParam.getName())
-                .description(variablePostParam.getDescription())
-                .expectedExpense(variablePostParam.getExpectedExpense())
-                .realExpenseMiddleMonth(variablePostParam.getRealExpenseMiddleMonth())
-                .realExpenseFinalMonth(variablePostParam.getRealExpenseFinalMonth())
-                .category(
-                        variablePostParam.getCategory() != null ?
-                                CategoriesEntity.builder().id(variablePostParam.getCategory().getId()).build() :
-                                null
-                )
-                .currentDate(variablePostParam.getCurrentDate())
-                .build();
-
-        var responseDate = variableUseCases.insertVariable(variableItem);
-
-        return new ResponseBuilder<VariableDTO>(HttpStatusCode.valueOf(200), responseDate).build();
-    }
-
-    @DeleteMapping("/variable/delete")
-    private ResponseEntity<ResponseBody<VariableDTO>> deleteVariable(
-            @RequestParam(value = "id", required = true) Long id
-    ) throws ModelViolationException {
-
-
-        var deleteVariable = variableUseCases.deleteVariable(id);
-
-        return new ResponseBuilder<VariableDTO>(HttpStatusCode.valueOf(200), deleteVariable).build();
+        return new ResponseBuilder<ExpenseDTO>(HttpStatusCode.valueOf(200), deleteFixed).build();
     }
 
     @GetMapping("/salary")
     public ResponseEntity<ResponseBody<List<SalaryDTO>>> getSalaryList(
-            @RequestParam(value = "currentDate", required = true) LocalDate currentDate
+            @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     ) throws ModelViolationException{
 
-        var responseData = salaryUseCases.getSalaryList(currentDate);
+        var date = commonUseCases.getReferenceDate(currentDate);
+        var responseData = salaryUseCases.getSalaryList(date);
 
         return new ResponseBuilder<List<SalaryDTO>>(HttpStatusCode.valueOf(200), responseData).build();
     }

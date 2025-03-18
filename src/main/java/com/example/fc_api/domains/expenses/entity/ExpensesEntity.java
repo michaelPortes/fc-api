@@ -1,8 +1,8 @@
-package com.example.fc_api.domains.fixed_expenses.entity;
+package com.example.fc_api.domains.expenses.entity;
 
 
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
-import com.example.fc_api.domains.fixed_expenses.model.FixedModel;
+import com.example.fc_api.domains.expenses.model.ExpenseModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -16,9 +16,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "fixed_expenses")
+@Table(name = "expenses")
 @Builder
-public class FixedEntity {
+public class ExpensesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +30,7 @@ public class FixedEntity {
     private String description;
 
     @NotNull
-    @Column(name = "expected_expense")
-    private Long expectedExpense;
+    private Long expense;
 
     @Column(name = "real_expense_middle_month")
     private Long realExpenseMiddleMonth;
@@ -47,18 +46,22 @@ public class FixedEntity {
     @Column(name = "reference_date ")
     private LocalDate currentDate;
 
-    public void upsertFixed(FixedModel fixedModel){
-        this.name = fixedModel.getName();
-        this.description = fixedModel.getDescription();
-        this.expectedExpense = fixedModel.getExpectedExpense();
-        this.realExpenseMiddleMonth = fixedModel.getRealExpenseMiddleMonth();
-        this.realExpenseFinalMonth = fixedModel.getRealExpenseFinalMonth();
-        this.category = fixedModel.getCategory();
-        this.currentDate = fixedModel.getCurrentDate();
+    @NotNull
+    private String type;
+
+    public void upsertExpenses(ExpenseModel expenseModel){
+        this.name = expenseModel.getName();
+        this.description = expenseModel.getDescription();
+        this.expense = expenseModel.getExpenses();
+        this.realExpenseMiddleMonth = expenseModel.getRealExpenseMiddleMonth();
+        this.realExpenseFinalMonth = expenseModel.getRealExpenseFinalMonth();
+        this.category = expenseModel.getCategory();
+        this.currentDate = expenseModel.getCurrentDate();
+        this.type = expenseModel.getType();
 
     }
 
-    public void deleteFixed(Long id){
+    public void deleteExpenses(Long id){
         this.id = id;
     }
 
