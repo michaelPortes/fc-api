@@ -42,7 +42,13 @@ public class DashboardController {
 
     private final ResultUseCases resultUseCases;
 
-    @PostMapping("/categories")
+    @GetMapping("/categories")
+    private ResponseEntity<ResponseBody<List<CategoriesDTO>>> getCategories() throws ModelViolationException{
+        var response = categoriesUseCases.getCategories();
+        return new ResponseBuilder<List<CategoriesDTO>>(HttpStatusCode.valueOf(200), response).build();
+    }
+
+    @PostMapping("/categories/insert")
     private ResponseEntity<ResponseBody<CategoriesDTO>> insertCategories(
             @RequestBody CategoriesPostParam categoriesPostParam
             ) throws ModelViolationException {

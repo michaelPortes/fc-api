@@ -8,11 +8,24 @@ import com.example.fc_api.domains.categories.repository.CategoriesDataAccess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class CategoriesUseCases {
 
     private final CategoriesDataAccess categoriesDataAccess;
+
+    public List<CategoriesDTO> getCategories() throws ModelViolationException{
+
+        var categories = categoriesDataAccess.getCategories();
+        return categories.stream().map(entity ->
+                CategoriesDTO.builder()
+                        .id(entity.getId())
+                        .name(entity.getName())
+                        .build()
+        ).toList();
+    }
 
     public CategoriesDTO insertCategories(InsertCategoriesDTO insertCategoriesDTO) throws ModelViolationException {
 
