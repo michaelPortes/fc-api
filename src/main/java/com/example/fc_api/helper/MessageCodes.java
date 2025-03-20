@@ -7,7 +7,8 @@ public enum MessageCodes {
     SECURITY_INVALID_TOKEN("{security.invalid.token}"),
     SECURITY_NOT_AUTHORIZED("{security.not.authorized}"),
     SECURITY_ERROR_TOKEN_GENERATE("{security.error.token.generate}"),
-    DASHBOARD_SHIFT_SETTING_MESSAGE("{dashboard.shift.setting.message}");
+    DASHBOARD_SHIFT_SETTING_MESSAGE("{dashboard.shift.setting.message}"),
+    IF_COLUMN_ERROR("{dashboard.result}");
 
     private final String messageCode;
 

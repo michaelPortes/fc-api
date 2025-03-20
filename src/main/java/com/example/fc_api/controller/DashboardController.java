@@ -14,6 +14,7 @@ import com.example.fc_api.domains.common.model.CommonUseCases;
 import com.example.fc_api.domains.expenses.ExpensesUseCases;
 import com.example.fc_api.domains.expenses.input.InsertExpenseDTO;
 import com.example.fc_api.domains.expenses.presentation.ExpenseDTO;
+import com.example.fc_api.domains.result.ResultUseCases;
 import com.example.fc_api.domains.salary.SalaryUseCases;
 import com.example.fc_api.domains.salary.input.InsertSalaryDTO;
 import com.example.fc_api.domains.salary.presentation.SalaryDTO;
@@ -38,6 +39,8 @@ public class DashboardController {
     private final SalaryUseCases salaryUseCases;
 
     private final CommonUseCases commonUseCases;
+
+    private final ResultUseCases resultUseCases;
 
     @PostMapping("/categories")
     private ResponseEntity<ResponseBody<CategoriesDTO>> insertCategories(
@@ -151,4 +154,15 @@ public class DashboardController {
         return new ResponseBuilder<SalaryDTO>(HttpStatusCode.valueOf(200), deleteVariable).build();
     }
 
+    @GetMapping("/result")
+    private ResponseEntity<ResponseBody<List<Object>>> getResult(
+            @RequestParam(value = "currentDate", required = false) LocalDate currentDate
+    )throws ModelViolationException{
+
+        var date = commonUseCases.getReferenceDate(currentDate);
+
+        var response = resultUseCases.getResults(date);
+
+        return new ResponseBuilder<>(HttpStatusCode.valueOf(200), response).build();
+    }
 }
