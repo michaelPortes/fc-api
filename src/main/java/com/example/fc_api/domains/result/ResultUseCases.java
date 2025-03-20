@@ -3,7 +3,6 @@ package com.example.fc_api.domains.result;
 import com.example.fc_api.controller.enums.ExpensesTypes;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.expenses.repository.ExpenseDataAccess;
-import com.example.fc_api.domains.result.model.ExpenseModel;
 import com.example.fc_api.domains.salary.repository.SalaryDataAccess;
 import com.example.fc_api.helper.MessageCodes;
 import lombok.RequiredArgsConstructor;
@@ -21,25 +20,55 @@ public class ResultUseCases {
 
     private final SalaryDataAccess salaryDataAccess;
 
-    public List<Object> getResults(LocalDate currentMonth) throws ModelViolationException {
+    public List<Object> getRestSalary(LocalDate currentMonth) throws ModelViolationException {
 
-        var expensesList = expenseDataAccess.getExpensesList(currentMonth, ExpensesTypes.FIXED.name());
+        var expensesList = expenseDataAccess.getExpenses(currentMonth);
 
-        var totalFixed = sunItems(expensesList, "expenses", null);
-        var totalVariable = sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth");
+        var preview = sunItems(expensesList, "expenses", null, null, currentMonth);
+        var real = sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", null, currentMonth);
 
         var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
 
 
         return List.of(
-                "fixedRest", monthSalary - totalFixed,
-                "variableRest", monthSalary - totalVariable
+                "fixedRest", monthSalary - preview,
+                "variableRest", monthSalary - real
         );
     }
 
+    public List<Object> getPercentage(LocalDate currentMonth) throws ModelViolationException{
 
-    private Long sunItems(List<?> model, String column, String secondColumn){
-        return model.stream().mapToLong(item -> {
+        var expensesList = expenseDataAccess.getExpenses(currentMonth);
+        var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
+
+        double investmentPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.INVESTMENT.name(), currentMonth));
+        double variablePercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name(), currentMonth));
+        double fixedPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name(), currentMonth));
+
+
+        return List.of(
+                "investment", investmentPercentage,
+                "variable", variablePercentage,
+                "fixed", fixedPercentage
+        );
+    }
+
+    private double percentage(double salary, double quantityType) {
+        return (quantityType / salary) * 100;
+    }
+
+    public Long sunItems(List<?> model, String column, String secondColumn, String type, LocalDate currentDate){
+
+            return model.stream().filter( item ->
+                    {
+                        try {
+                            return type == null ||
+                                item.getClass().getDeclaredField("type").get(item).equals(type);
+                        } catch (IllegalAccessException | NoSuchFieldException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                .mapToLong(item -> {
             try {
                 Field field1 = item.getClass().getDeclaredField(column);
                 field1.setAccessible(true);
@@ -54,8 +83,6 @@ public class ResultUseCases {
             } catch (Exception e) {
                 throw new RuntimeException(MessageCodes.IF_COLUMN_ERROR.getMessageCode());
             }
-        })
-                .sum();
-
+        }).sum();
     }
 }

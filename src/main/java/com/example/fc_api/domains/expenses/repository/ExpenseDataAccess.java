@@ -15,8 +15,18 @@ public class ExpenseDataAccess {
 
     private final ExpensesRepository expensesRepository;
 
-    public List<ExpenseModel> getExpensesList(LocalDate currentDate, String expensesType) throws ModelViolationException{
-        return expensesRepository.getExpensesList(currentDate, expensesType).stream().map(entity -> {
+    public List<ExpenseModel> getExpenses(LocalDate currentDate) throws ModelViolationException{
+        return expensesRepository.getExpensesList(currentDate).stream().map(entity -> {
+            try {
+                return ExpenseModel.fromEntity(entity);
+            } catch (ModelViolationException e){
+                throw new IllegalArgumentException(e);
+            }
+        }).toList();
+    }
+
+    public List<ExpenseModel> getExpensesListByType(LocalDate currentDate, String expensesType) throws ModelViolationException{
+        return expensesRepository.getExpensesListByType(currentDate, expensesType).stream().map(entity -> {
             try {
                 return ExpenseModel.fromEntity(entity);
             } catch (ModelViolationException e){
