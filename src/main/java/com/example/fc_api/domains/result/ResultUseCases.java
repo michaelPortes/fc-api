@@ -24,8 +24,8 @@ public class ResultUseCases {
 
         var expensesList = expenseDataAccess.getExpenses(currentMonth);
 
-        var preview = sunItems(expensesList, "expenses", null, null, currentMonth);
-        var real = sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", null, currentMonth);
+        var preview = sunItems(expensesList, "expenses", null, null);
+        var real = sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", null);
 
         var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
 
@@ -41,9 +41,9 @@ public class ResultUseCases {
         var expensesList = expenseDataAccess.getExpenses(currentMonth);
         var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
 
-        double investmentPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.INVESTMENT.name(), currentMonth));
-        double variablePercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name(), currentMonth));
-        double fixedPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name(), currentMonth));
+        double investmentPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.INVESTMENT.name()));
+        double variablePercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name()));
+        double fixedPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name()));
 
 
         return List.of(
@@ -57,7 +57,7 @@ public class ResultUseCases {
         return (quantityType / salary) * 100;
     }
 
-    public Long sunItems(List<?> model, String column, String secondColumn, String type, LocalDate currentDate){
+    public Long sunItems(List<?> model, String column, String secondColumn, String type){
 
             return model.stream().filter( item ->
                     {
