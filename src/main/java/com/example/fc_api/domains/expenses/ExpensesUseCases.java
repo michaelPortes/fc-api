@@ -22,7 +22,7 @@ public class ExpensesUseCases {
 
         String enumType = getEnumByType(type);
 
-        var fixedList = expenseDataAccess.getExpensesList(currentMonth, enumType);
+        var fixedList = expenseDataAccess.getExpensesListByType(currentMonth, enumType);
 
         return fixedList.stream().map(entity ->
             ExpenseDTO.builder()

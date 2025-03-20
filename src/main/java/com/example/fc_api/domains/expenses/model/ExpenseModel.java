@@ -14,15 +14,15 @@ import java.time.LocalDate;
 @Getter
 public class ExpenseModel {
 
-    private Long id;
-    private String name;
-    private String description;
-    private Long expenses;
-    private Long realExpenseMiddleMonth;
-    private Long realExpenseFinalMonth;
-    private CategoriesEntity category;
-    private LocalDate currentDate;
-    private String type;
+    public Long id;
+    public String name;
+    public String description;
+    public Long expenses;
+    public Long realExpenseMiddleMonth;
+    public Long realExpenseFinalMonth;
+    public CategoriesEntity category;
+    public LocalDate currentDate;
+    public String type;
 
     public static class ExpensesModelBuilder {
         public ExpenseModel build()  {
