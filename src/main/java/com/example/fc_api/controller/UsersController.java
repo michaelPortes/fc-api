@@ -37,21 +37,6 @@ public class UsersController {
         return new ResponseBuilder<List<UsersDTO>>(HttpStatusCode.valueOf(200), response).build();
     }
 
-//    @PostMapping("/insert")
-//    public ResponseEntity<ResponseBody<UsersDTO>> createUser(
-//            @RequestBody UsersPostParam usersPostParam) {
-//
-//        UsersEntity usersEntity = UsersEntity.builder()
-//                .name(usersPostParam.getName())
-//                .address(usersPostParam.getAddress())
-//                .active(usersPostParam.getActive())
-//                .build();
-//
-//        var response = usersUseCases.createUser(usersEntity);
-//
-//        return new ResponseBuilder<UsersDTO>(HttpStatusCode.valueOf(200), response).build();
-//    }
-
     @GetMapping("/test")
     public String testEndpoint() {
         return "API is working!";
