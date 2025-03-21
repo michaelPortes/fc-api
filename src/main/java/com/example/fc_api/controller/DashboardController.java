@@ -43,13 +43,13 @@ public class DashboardController {
     private final ResultUseCases resultUseCases;
 
     @GetMapping("/categories")
-    private ResponseEntity<ResponseBody<List<CategoriesDTO>>> getCategories() throws ModelViolationException{
+    public ResponseEntity<ResponseBody<List<CategoriesDTO>>> getCategories() throws ModelViolationException{
         var response = categoriesUseCases.getCategories();
         return new ResponseBuilder<List<CategoriesDTO>>(HttpStatusCode.valueOf(200), response).build();
     }
 
     @PostMapping("/categories/insert")
-    private ResponseEntity<ResponseBody<CategoriesDTO>> insertCategories(
+    public ResponseEntity<ResponseBody<CategoriesDTO>> insertCategories(
             @RequestBody CategoriesPostParam categoriesPostParam
             ) throws ModelViolationException {
 
@@ -63,7 +63,7 @@ public class DashboardController {
     }
 
     @DeleteMapping("/category/delete")
-    private ResponseEntity<ResponseBody<CategoriesDTO>> deleteCategory(
+    public ResponseEntity<ResponseBody<CategoriesDTO>> deleteCategory(
             @RequestParam(value = "id", required = true) Long id
     ) throws ModelViolationException {
 
@@ -113,7 +113,7 @@ public class DashboardController {
     }
 
     @DeleteMapping("/expense/delete")
-    private ResponseEntity<ResponseBody<ExpenseDTO>> deleteFixed(
+    public ResponseEntity<ResponseBody<ExpenseDTO>> deleteFixed(
             @RequestParam(value = "id", required = true) Long id
     ) throws ModelViolationException {
 
@@ -150,7 +150,7 @@ public class DashboardController {
     }
 
     @DeleteMapping("/salary/delete")
-    private ResponseEntity<ResponseBody<SalaryDTO>> deleteSalary(
+    public ResponseEntity<ResponseBody<SalaryDTO>> deleteSalary(
             @RequestParam(value = "id", required = true) Long id
     ) throws ModelViolationException {
 
@@ -161,7 +161,7 @@ public class DashboardController {
     }
 
     @GetMapping("/result")
-    private ResponseEntity<ResponseBody<List<Object>>> getResult(
+    public ResponseEntity<ResponseBody<List<Object>>> getResult(
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     )throws ModelViolationException{
 
@@ -173,7 +173,7 @@ public class DashboardController {
     }
 
     @GetMapping("/percentage")
-    private ResponseEntity<ResponseBody<List<Object>>> getPercentage(
+    public ResponseEntity<ResponseBody<List<Object>>> getPercentage(
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     ) throws  ModelViolationException{
 
