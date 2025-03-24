@@ -63,9 +63,9 @@ class DashboardControllerTest {
     void testGetExpenseList() throws ModelViolationException {
         LocalDate date = LocalDate.now();
         when(commonUseCases.getReferenceDate(any())).thenReturn(date);
-        when(expensesUseCases.getExpensesList(date, "FIXED")).thenReturn(Collections.emptyList());
+        when(expensesUseCases.getExpensesList(date)).thenReturn(Collections.emptyList());
 
-        ResponseEntity<ResponseBody<List<ExpenseDTO>>> response = dashboardController.getFixedList(date, "FIXED");
+        ResponseEntity<ResponseBody<List<ExpenseDTO>>> response = dashboardController.getFixedList(date);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());

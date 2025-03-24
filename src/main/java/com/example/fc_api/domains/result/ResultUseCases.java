@@ -3,6 +3,7 @@ package com.example.fc_api.domains.result;
 import com.example.fc_api.controller.enums.ExpensesTypes;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.expenses.repository.ExpenseDataAccess;
+import com.example.fc_api.domains.result.presentation.DefaultResultDTO;
 import com.example.fc_api.domains.salary.repository.SalaryDataAccess;
 import com.example.fc_api.helper.MessageCodes;
 import lombok.RequiredArgsConstructor;
@@ -20,20 +21,26 @@ public class ResultUseCases {
 
     private final SalaryDataAccess salaryDataAccess;
 
-    public List<Object> getRestSalary(LocalDate currentMonth) throws ModelViolationException {
+    public Object getRestSalary(LocalDate currentMonth) throws ModelViolationException {
 
         var expensesList = expenseDataAccess.getExpenses(currentMonth);
 
-        var preview = sunItems(expensesList, "expenses", null, null);
-        var real = sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", null);
-
         var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
+        var preview = sunItems(expensesList, "expenses", null, null);
+        var actual = sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", null);
+
+        var variance = preview - actual;
+        var expectedSurpluses = monthSalary - preview;
+        var actualSurpluses = monthSalary - actual;
 
 
-        return List.of(
-                "fixedRest", monthSalary - preview,
-                "variableRest", monthSalary - real
-        );
+        return DefaultResultDTO.builder()
+                .expectedExpenses(preview)
+                .actualExpenses(actual)
+                .variance(variance)
+                .expectedSurpluses(expectedSurpluses)
+                .actualSurpluses(actualSurpluses)
+                .build();
     }
 
     public List<Object> getPercentage(LocalDate currentMonth) throws ModelViolationException{
