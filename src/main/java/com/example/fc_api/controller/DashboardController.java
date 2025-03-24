@@ -76,13 +76,12 @@ public class DashboardController {
 
     @GetMapping("/expense/list")
     public ResponseEntity<ResponseBody<List<ExpenseDTO>>>  getFixedList(
-            @RequestParam(value = "currentDate", required = false) LocalDate currentDate,
-            @RequestParam(value = "enumType", required = true) String enumType
+            @RequestParam(value = "currentDate", required = false) LocalDate currentDate
             ) throws ModelViolationException{
 
         var date = commonUseCases.getReferenceDate(currentDate);
 
-        var responseData = fixedUseCases.getExpensesList(date, enumType);
+        var responseData = fixedUseCases.getExpensesList(date);
 
         return new ResponseBuilder<List<ExpenseDTO>>(HttpStatusCode.valueOf(200), responseData).build();
     }
@@ -162,7 +161,7 @@ public class DashboardController {
     }
 
     @GetMapping("/result")
-    public ResponseEntity<ResponseBody<List<Object>>> getResult(
+    public ResponseEntity<ResponseBody<Object>> getResult(
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     )throws ModelViolationException{
 
