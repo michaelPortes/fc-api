@@ -18,11 +18,9 @@ public class ExpensesUseCases {
 
     private final ExpenseDataAccess expenseDataAccess;
 
-    public List<ExpenseDTO> getExpensesList(LocalDate currentMonth, String type) throws ModelViolationException {
+    public List<ExpenseDTO> getExpensesList(LocalDate currentMonth) throws ModelViolationException {
 
-        String enumType = getEnumByType(type);
-
-        var fixedList = expenseDataAccess.getExpensesListByType(currentMonth, enumType);
+        var fixedList = expenseDataAccess.getExpenses(currentMonth);
 
         return fixedList.stream().map(entity ->
             ExpenseDTO.builder()
