@@ -4,6 +4,7 @@ import com.example.fc_api.controller.enums.ExpensesTypes;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.expenses.repository.ExpenseDataAccess;
 import com.example.fc_api.domains.result.presentation.DefaultResultDTO;
+import com.example.fc_api.domains.result.presentation.PercentageDTO;
 import com.example.fc_api.domains.salary.repository.SalaryDataAccess;
 import com.example.fc_api.helper.MessageCodes;
 import lombok.RequiredArgsConstructor;
@@ -43,21 +44,21 @@ public class ResultUseCases {
                 .build();
     }
 
-    public List<Object> getPercentage(LocalDate currentMonth) throws ModelViolationException{
+    public Object getPercentage(LocalDate currentMonth) throws ModelViolationException{
 
         var expensesList = expenseDataAccess.getExpenses(currentMonth);
         var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
 
         double investmentPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.INVESTMENT.name()));
-        double variablePercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name()));
-        double fixedPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name()));
+        double variablePercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name()));
+        double fixedPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name()));
 
 
-        return List.of(
-                "investment", investmentPercentage,
-                "variable", variablePercentage,
-                "fixed", fixedPercentage
-        );
+        return PercentageDTO.builder()
+                .investment(investmentPercentage)
+                .variable(variablePercentage)
+                .fixed(fixedPercentage)
+                .build();
     }
 
     private double percentage(double salary, double quantityType) {

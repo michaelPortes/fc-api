@@ -169,11 +169,11 @@ public class DashboardController {
 
         var response = resultUseCases.getRestSalary(date);
 
-        return new ResponseBuilder<>(HttpStatusCode.valueOf(200), response).build();
+        return new ResponseBuilder<Object>(HttpStatusCode.valueOf(200), response).build();
     }
 
     @GetMapping("/percentage")
-    public ResponseEntity<ResponseBody<List<Object>>> getPercentage(
+    public ResponseEntity<ResponseBody<Object>> getPercentage(
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     ) throws  ModelViolationException{
 
@@ -181,6 +181,6 @@ public class DashboardController {
 
         var response = resultUseCases.getPercentage(date);
 
-        return new ResponseBuilder<List<Object>>(HttpStatusCode.valueOf(200), response).build();
+        return new ResponseBuilder<Object>(HttpStatusCode.valueOf(200), response).build();
     }
 }
