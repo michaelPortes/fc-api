@@ -24,6 +24,7 @@ public class ExpensesUseCases {
 
         return fixedList.stream().map(entity ->
             ExpenseDTO.builder()
+                    .id(entity.getId())
                     .name(entity.getName())
                     .description(entity.getDescription())
                     .expectedExpense(entity.getExpenses())

@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 public class ExpenseDTO {
 
+    private Long id;
     private String name;
     private String description;
     private Long expectedExpense;
@@ -19,6 +20,7 @@ public class ExpenseDTO {
 
     public static ExpenseDTO fromModel(ExpenseModel expenseModel){
         return ExpenseDTO.builder()
+                .id(expenseModel.getId())
                 .name(expenseModel.getName())
                 .description(expenseModel.getDescription())
                 .expectedExpense(expenseModel.getExpenses())
