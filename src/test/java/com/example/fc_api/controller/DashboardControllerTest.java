@@ -91,10 +91,9 @@ class DashboardControllerTest {
         when(commonUseCases.getReferenceDate(any())).thenReturn(date);
         when(resultUseCases.getPercentage(date)).thenReturn(Collections.singletonList("test"));
 
-        ResponseEntity<ResponseBody<List<Object>>> response = dashboardController.getPercentage(date);
+        ResponseEntity<ResponseBody<Object>> response = dashboardController.getPercentage(date);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
-        assertFalse(response.getBody().getData().isEmpty());
     }
 }
