@@ -27,8 +27,8 @@ public class ResultUseCases {
         var expensesList = expenseDataAccess.getExpenses(currentMonth);
 
         var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
-        var preview = sunItems(expensesList, "expenses", null, null);
-        var actual = sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", null);
+        var preview = sumItems(expensesList, "expenses", null, null);
+        var actual = sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", null);
 
         var variance = preview - actual;
         var expectedSurpluses = monthSalary - preview;
@@ -49,9 +49,9 @@ public class ResultUseCases {
         var expensesList = expenseDataAccess.getExpenses(currentMonth);
         var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
 
-        double investmentPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.INVESTMENT.name()));
-        double variablePercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name()));
-        double fixedPercentage = percentage(monthSalary, sunItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name()));
+        double investmentPercentage = percentage(monthSalary, sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.INVESTMENT.name()));
+        double variablePercentage = percentage(monthSalary, sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name()));
+        double fixedPercentage = percentage(monthSalary, sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name()));
 
 
         return PercentageDTO.builder()
@@ -65,32 +65,37 @@ public class ResultUseCases {
         return (quantityType / salary) * 100;
     }
 
-    public Long sunItems(List<?> model, String column, String secondColumn, String type){
-
-            return model.stream().filter( item ->
-                    {
-                        try {
-                            return type == null ||
-                                item.getClass().getDeclaredField("type").get(item).equals(type);
-                        } catch (IllegalAccessException | NoSuchFieldException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
+    public Long sumItems(List<?> model, String column, String secondColumn, String type) {
+        return model.stream()
+                .filter(item -> {
+                    try {
+                        return type == null || item.getClass().getDeclaredField("type").get(item).equals(type);
+                    } catch (IllegalAccessException | NoSuchFieldException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .mapToLong(item -> {
-            try {
-                Field field1 = item.getClass().getDeclaredField(column);
-                field1.setAccessible(true);
-                Long value1 = (Long) field1.get(item);
+                    try {
+                        Long total = 0L;
 
-                if (value1 == null) {
-                    Field field2 = item.getClass().getDeclaredField(secondColumn);
-                    field2.setAccessible(true);
-                    return (Long) field2.get(item);
-                }
-                return value1;
-            } catch (Exception e) {
-                throw new RuntimeException(MessageCodes.IF_COLUMN_ERROR.getMessageCode());
-            }
-        }).sum();
+                        if (column != null) {
+                            Field field1 = item.getClass().getDeclaredField(column);
+                            field1.setAccessible(true);
+                            Long value1 = (Long) field1.get(item);
+                            total += (value1 != null ? value1 : 0);
+                        }
+
+                        if (secondColumn != null) {
+                            Field field2 = item.getClass().getDeclaredField(secondColumn);
+                            field2.setAccessible(true);
+                            Long value2 = (Long) field2.get(item);
+                            total += (value2 != null ? value2 : 0);
+                        }
+
+                        return total;
+                    } catch (Exception e) {
+                        throw new RuntimeException(MessageCodes.IF_COLUMN_ERROR.getMessageCode());
+                    }
+                }).sum();
     }
 }

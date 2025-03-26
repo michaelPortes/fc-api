@@ -18,6 +18,7 @@ import com.example.fc_api.domains.result.ResultUseCases;
 import com.example.fc_api.domains.salary.SalaryUseCases;
 import com.example.fc_api.domains.salary.input.InsertSalaryDTO;
 import com.example.fc_api.domains.salary.presentation.SalaryDTO;
+import com.example.fc_api.helper.MessageCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class DashboardController {
 
     private final CategoriesUseCases categoriesUseCases;
 
-    private final ExpensesUseCases fixedUseCases;
+    private final ExpensesUseCases expensesUseCases;
 
     private final SalaryUseCases salaryUseCases;
 
@@ -81,9 +82,20 @@ public class DashboardController {
 
         var date = commonUseCases.getReferenceDate(currentDate);
 
-        var responseData = fixedUseCases.getExpensesList(date);
+        var responseData = expensesUseCases.getExpensesList(date);
 
         return new ResponseBuilder<List<ExpenseDTO>>(HttpStatusCode.valueOf(200), responseData).build();
+    }
+
+    @GetMapping("/expense/copy")
+    public ResponseEntity<ResponseBody<MessageCodes>> copyDataToNextMonth(
+            @RequestParam(value = "currentDate", required = false) LocalDate currentDate
+    ) throws ModelViolationException{
+
+        var date = commonUseCases.getReferenceDate(currentDate);
+
+        var responseData = expensesUseCases.copyToNextMonth(date);
+        return new ResponseBuilder<MessageCodes>(HttpStatusCode.valueOf(200), responseData).build();
     }
 
 
@@ -107,7 +119,7 @@ public class DashboardController {
                 .type(fixedPostParam.getType())
                 .build();
 
-        var responseDate = fixedUseCases.insertExpenses(fixedItem);
+        var responseDate = expensesUseCases.insertExpenses(fixedItem);
 
         return new ResponseBuilder<ExpenseDTO>(HttpStatusCode.valueOf(200), responseDate).build();
     }
@@ -118,7 +130,7 @@ public class DashboardController {
     ) throws ModelViolationException {
 
 
-        var deleteFixed = fixedUseCases.deleteExpenses(id);
+        var deleteFixed = expensesUseCases.deleteExpenses(id);
 
         return new ResponseBuilder<ExpenseDTO>(HttpStatusCode.valueOf(200), deleteFixed).build();
     }

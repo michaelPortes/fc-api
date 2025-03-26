@@ -44,6 +44,7 @@ public class ExpenseModel {
                 .expenses(expenseEntity.getExpense())
                 .realExpenseMiddleMonth(expenseEntity.getRealExpenseMiddleMonth())
                 .realExpenseFinalMonth(expenseEntity.getRealExpenseFinalMonth())
+                .category(expenseEntity.getCategory())
                 .currentDate(expenseEntity.getCurrentDate())
                 .type(expenseEntity.getType())
                 .build();

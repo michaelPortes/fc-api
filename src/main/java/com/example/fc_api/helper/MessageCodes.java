@@ -8,7 +8,8 @@ public enum MessageCodes {
     SECURITY_NOT_AUTHORIZED("{security.not.authorized}"),
     SECURITY_ERROR_TOKEN_GENERATE("{security.error.token.generate}"),
     DASHBOARD_SHIFT_SETTING_MESSAGE("{dashboard.shift.setting.message}"),
-    IF_COLUMN_ERROR("{dashboard.result}");
+    IF_COLUMN_ERROR("{dashboard.result}"),
+    ADD_SUCCESSFUL("{add.item.success}");
 
     private final String messageCode;
 
