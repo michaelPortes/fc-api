@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -175,6 +176,16 @@ public class DashboardController {
         var response = resultUseCases.getRestSalary(commonUseCases.getReferenceDate(currentDate));
 
         return new ResponseBuilder<Object>(HttpStatusCode.valueOf(200), response).build();
+    }
+
+    @GetMapping("/result/chart")
+    public ResponseEntity<ResponseBody<Map<String, List<Double>>>> getLastSexMonth(
+            @RequestParam(value = "currentDate", required = false) LocalDate currentDate
+    ) throws ModelViolationException{
+
+        var response = resultUseCases.getSixMonthsAgo(commonUseCases.getReferenceDate(currentDate));
+
+        return new ResponseBuilder<Map<String, List<Double>>>(HttpStatusCode.valueOf(200), response).build();
     }
 
     @GetMapping("/percentage")

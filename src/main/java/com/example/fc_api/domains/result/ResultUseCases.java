@@ -2,9 +2,13 @@ package com.example.fc_api.domains.result;
 
 import com.example.fc_api.controller.enums.ExpensesTypes;
 import com.example.fc_api.custon.exception.ModelViolationException;
+import com.example.fc_api.domains.expenses.model.ExpenseModel;
+import com.example.fc_api.domains.expenses.presentation.ExpenseDTO;
 import com.example.fc_api.domains.expenses.repository.ExpenseDataAccess;
 import com.example.fc_api.domains.result.presentation.DefaultResultDTO;
 import com.example.fc_api.domains.result.presentation.PercentageDTO;
+import com.example.fc_api.domains.salary.model.SalaryModel;
+import com.example.fc_api.domains.salary.presentation.SalaryDTO;
 import com.example.fc_api.domains.salary.repository.SalaryDataAccess;
 import com.example.fc_api.helper.MessageCodes;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +16,11 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -66,6 +74,64 @@ public class ResultUseCases {
                 .fixed(fixedPercentage)
                 .fixedValue(totalValueFixed)
                 .build();
+    }
+
+    public Map<String, List<Double>> getSixMonthsAgo(LocalDate currentDate) throws ModelViolationException{
+
+        // Fetch data for the last 6 months
+        List<SalaryModel> sixMonthsSalaries = salaryDataAccess.getSalaryBetweenDates(
+                currentDate.minusMonths(6), currentDate
+        );
+        List<ExpenseModel> sixMonthsExpenses = expenseDataAccess.getExpensesListBetweenDates(
+                currentDate.minusMonths(6), currentDate
+        );
+
+        // Check if we have expense data
+        if (sixMonthsExpenses.isEmpty()) {
+            throw new IllegalStateException("No expense data available for the last 6 months.");
+        }
+
+        // Group expenses by year-month and calculate sums
+        Map<String, List<Double>> resultByMonth = sixMonthsExpenses.stream()
+                .collect(Collectors.groupingBy(
+                        expense -> {
+                            LocalDate date = expense.getCurrentDate();
+                            return date.format(DateTimeFormatter.ofPattern("yyyy-MM")); // e.g., "2024-03"
+                        },
+                        Collectors.collectingAndThen(Collectors.toList(), expenses -> {
+                            List<Double> sums = new ArrayList<>();
+
+                            // 1st item: Sum of 'expenses' for this month
+                            double totalExpenses = expenses.stream()
+                                    .mapToLong(ExpenseModel::getExpenses)
+                                    .sum();
+                            sums.add(totalExpenses);
+
+                            // 2nd item: Sum of 'realExpenseMiddleMonth' + 'realExpenseFinalMonth' for this month
+                            double totalRealExpenses = expenses.stream()
+                                    .mapToLong(expense -> {
+                                        Long middleMonth = expense.getRealExpenseMiddleMonth();
+                                        Long finalMonth = expense.getRealExpenseFinalMonth();
+                                        return (middleMonth != null ? middleMonth : 0L) +
+                                                (finalMonth != null ? finalMonth : 0L);
+                                    })
+                                    .sum();
+                            sums.add(totalRealExpenses);
+
+                            // 3rd item: Sum of salaries based on unique dates in sixMonthsSalaries
+                            double totalMatchingSalaries = sixMonthsSalaries.stream()
+                                    .filter(salary -> sixMonthsExpenses.stream()
+                                            .anyMatch(expense -> expense.currentDate.equals(salary.getCurrentDate())))
+                                    .mapToDouble(SalaryModel::getSalary)
+                                    .sum();
+
+                            sums.add(totalMatchingSalaries);
+
+                            return sums;
+                        })
+                ));
+
+        return resultByMonth;
     }
 
     private double percentage(double salary, double quantityType) {
