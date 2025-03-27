@@ -80,9 +80,7 @@ public class DashboardController {
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
             ) throws ModelViolationException{
 
-        var date = commonUseCases.getReferenceDate(currentDate);
-
-        var responseData = expensesUseCases.getExpensesList(date);
+        var responseData = expensesUseCases.getExpensesList(commonUseCases.getReferenceDate(currentDate));
 
         return new ResponseBuilder<List<ExpenseDTO>>(HttpStatusCode.valueOf(200), responseData).build();
     }
@@ -92,9 +90,8 @@ public class DashboardController {
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     ) throws ModelViolationException{
 
-        var date = commonUseCases.getReferenceDate(currentDate);
+        var responseData = expensesUseCases.copyToNextMonth(commonUseCases.getReferenceDate(currentDate));
 
-        var responseData = expensesUseCases.copyToNextMonth(date);
         return new ResponseBuilder<MessageCodes>(HttpStatusCode.valueOf(200), responseData).build();
     }
 
@@ -140,8 +137,7 @@ public class DashboardController {
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     ) throws ModelViolationException{
 
-        var date = commonUseCases.getReferenceDate(currentDate);
-        var responseData = salaryUseCases.getSalaryList(date);
+        var responseData = salaryUseCases.getSalaryList(commonUseCases.getReferenceDate(currentDate));
 
         return new ResponseBuilder<List<SalaryDTO>>(HttpStatusCode.valueOf(200), responseData).build();
     }
@@ -166,7 +162,6 @@ public class DashboardController {
             @RequestParam(value = "id", required = true) Long id
     ) throws ModelViolationException {
 
-
         var deleteVariable = salaryUseCases.deleteSalary(id);
 
         return new ResponseBuilder<SalaryDTO>(HttpStatusCode.valueOf(200), deleteVariable).build();
@@ -177,9 +172,7 @@ public class DashboardController {
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     )throws ModelViolationException{
 
-        var date = commonUseCases.getReferenceDate(currentDate);
-
-        var response = resultUseCases.getRestSalary(date);
+        var response = resultUseCases.getRestSalary(commonUseCases.getReferenceDate(currentDate));
 
         return new ResponseBuilder<Object>(HttpStatusCode.valueOf(200), response).build();
     }
@@ -189,9 +182,7 @@ public class DashboardController {
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
     ) throws  ModelViolationException{
 
-        var date = commonUseCases.getReferenceDate(currentDate);
-
-        var response = resultUseCases.getPercentage(date);
+        var response = resultUseCases.getPercentage(commonUseCases.getReferenceDate(currentDate));
 
         return new ResponseBuilder<Object>(HttpStatusCode.valueOf(200), response).build();
     }
