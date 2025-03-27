@@ -49,15 +49,22 @@ public class ResultUseCases {
         var expensesList = expenseDataAccess.getExpenses(currentMonth);
         var monthSalary = salaryDataAccess.getSalaryList(currentMonth).getFirst().getSalary();
 
-        double investmentPercentage = percentage(monthSalary, sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.INVESTMENT.name()));
-        double variablePercentage = percentage(monthSalary, sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name()));
-        double fixedPercentage = percentage(monthSalary, sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name()));
+        double totalValueInvestment = sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.INVESTMENT.name());
+        double totalValueVariable = sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.VARIABLE.name());
+        double totalValueFixed = sumItems(expensesList, "realExpenseMiddleMonth", "realExpenseFinalMonth", ExpensesTypes.FIXED.name());
+
+        double investmentPercentage = percentage(monthSalary, totalValueInvestment);
+        double variablePercentage = percentage(monthSalary, totalValueVariable);
+        double fixedPercentage = percentage(monthSalary, totalValueFixed);
 
 
         return PercentageDTO.builder()
                 .investment(investmentPercentage)
+                .investmentValue(totalValueInvestment)
                 .variable(variablePercentage)
+                .variableValue(totalValueVariable)
                 .fixed(fixedPercentage)
+                .fixedValue(totalValueFixed)
                 .build();
     }
 
