@@ -25,8 +25,8 @@ public class ExpenseDataAccess {
         }).toList();
     }
 
-    public List<ExpenseModel> getExpensesListByType(LocalDate currentDate, String expensesType) throws ModelViolationException{
-        return expensesRepository.getExpensesListByType(currentDate, expensesType).stream().map(entity -> {
+    public List<ExpenseModel> getExpensesListBetweenDates(LocalDate sixMonthAgo, LocalDate currentDate) throws ModelViolationException{
+        return expensesRepository.getExpensesListBetweenDates(sixMonthAgo, currentDate).stream().map(entity -> {
             try {
                 return ExpenseModel.fromEntity(entity);
             } catch (ModelViolationException e){

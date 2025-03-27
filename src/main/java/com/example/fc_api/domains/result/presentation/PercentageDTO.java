@@ -7,6 +7,9 @@ import lombok.Getter;
 @Getter
 public class PercentageDTO {
     private double investment;
+    private double investmentValue;
     private double fixed;
+    private double fixedValue;
     private double variable;
+    private double variableValue;
 }

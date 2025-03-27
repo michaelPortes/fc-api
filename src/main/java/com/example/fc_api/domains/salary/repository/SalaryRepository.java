@@ -18,4 +18,12 @@ public interface SalaryRepository extends JpaRepository<SalaryEntity, Long> {
                 nativeQuery = true
     )
     public Collection<SalaryEntity> getSalaryList(@Param("currentDate") LocalDate currentDate);
+
+    @Query(
+            value = "select * from salary " +
+                    "WHERE DATE_TRUNC('month', reference_date) >= DATE_TRUNC('month', CAST(:sixMonthAgo AS DATE)) " +
+                    "and DATE_TRUNC('month', reference_date) <= DATE_TRUNC('month', CAST(:currentDate AS DATE))",
+            nativeQuery = true
+    )
+    public Collection<SalaryEntity> getSalaryListBetweenDates(@Param("sixMonthAgo") LocalDate sixMonthAgo, @Param("currentDate") LocalDate currentDate);
 }
