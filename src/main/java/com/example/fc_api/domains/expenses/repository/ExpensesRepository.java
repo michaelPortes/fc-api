@@ -14,10 +14,11 @@ public interface ExpensesRepository extends JpaRepository<ExpensesEntity, Long> 
 
     @Query(
             value = "SELECT * FROM expenses " +
-                    "WHERE DATE_TRUNC('month', reference_date) = DATE_TRUNC('month', CAST(:currentDate AS DATE)) and type = :type",
+                    "WHERE DATE_TRUNC('month', reference_date) >= DATE_TRUNC('month', CAST(:sixMonthAgo AS DATE)) " +
+                    "and DATE_TRUNC('month', reference_date) <= DATE_TRUNC('month', CAST(:currentDate AS DATE))",
             nativeQuery = true
     )
-    public Collection<ExpensesEntity> getExpensesListByType(@Param("currentDate") LocalDate currentDate, @Param("type") String expensesType);
+    public Collection<ExpensesEntity> getExpensesListBetweenDates(@Param("sixMonthAgo") LocalDate sixMonthAgo, @Param("currentDate") LocalDate currentDate);
 
     @Query(
             value = "SELECT * FROM expenses " +
