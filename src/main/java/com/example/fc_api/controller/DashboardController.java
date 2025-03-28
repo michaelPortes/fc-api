@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://finance-whisperer-78.lovable.app"})
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/dashboard")
