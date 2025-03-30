@@ -1,0 +1,33 @@
+logging:
+  level:
+    root: info
+
+spring:
+  jpa:
+    database: h2
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        default_schema: dashboard_test
+        connection:
+          url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;TIME ZONE=UTC;DATABASE_TO_UPPER=false;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS dashboard_test
+      username: fc-test
+      password: fc-test
+  liquibase:
+    enabled: false
+  jackson:
+    time-zone=UTC:
+
+auth:
+  client-id: clientid
+  secret-id: secretid
+  oauth:
+    uri: oauthUri
+  redirect:
+    uri: redirectUri
+
+execution_environment: dev

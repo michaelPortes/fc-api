@@ -65,7 +65,7 @@ class DashboardControllerTest {
         when(commonUseCases.getReferenceDate(any())).thenReturn(date);
         when(expensesUseCases.getExpensesList(date)).thenReturn(Collections.emptyList());
 
-        ResponseEntity<ResponseBody<List<ExpenseDTO>>> response = dashboardController.getFixedList(date);
+        ResponseEntity<ResponseBody<List<ExpenseDTO>>> response = dashboardController.getExpensesList(date);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
