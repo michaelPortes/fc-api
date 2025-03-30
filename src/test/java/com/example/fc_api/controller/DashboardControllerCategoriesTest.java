@@ -2,17 +2,14 @@ package com.example.fc_api.controller;
 
 import com.example.fc_api.controller.param.CategoriesPostParam;
 import com.example.fc_api.custon.exception.ModelViolationException;
-import com.example.fc_api.domains.categories.CategoriesUseCases;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.lang.reflect.Array;
 import java.util.Objects;
 
 

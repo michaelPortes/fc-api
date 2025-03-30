@@ -77,7 +77,7 @@ public class DashboardController {
     }
 
     @GetMapping("/expense/list")
-    public ResponseEntity<ResponseBody<List<ExpenseDTO>>>  getFixedList(
+    public ResponseEntity<ResponseBody<List<ExpenseDTO>>>  getExpensesList(
             @RequestParam(value = "currentDate", required = false) LocalDate currentDate
             ) throws ModelViolationException{
 
@@ -98,7 +98,7 @@ public class DashboardController {
 
 
     @PostMapping("/expense/insert")
-    public ResponseEntity<ResponseBody<ExpenseDTO>> insertFixed(
+    public ResponseEntity<ResponseBody<ExpenseDTO>> insertExpenses(
             @RequestBody ExpensesPostParam fixedPostParam
             ) throws ModelViolationException{
 
@@ -123,7 +123,7 @@ public class DashboardController {
     }
 
     @DeleteMapping("/expense/delete")
-    public ResponseEntity<ResponseBody<ExpenseDTO>> deleteFixed(
+    public ResponseEntity<ResponseBody<ExpenseDTO>> deleteExpense(
             @RequestParam(value = "id", required = true) Long id
     ) throws ModelViolationException {
 
