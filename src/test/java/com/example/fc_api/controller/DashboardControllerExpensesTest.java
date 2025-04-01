@@ -6,6 +6,7 @@ import com.example.fc_api.controller.param.CategoriesPostParam;
 import com.example.fc_api.controller.param.ExpensesPostParam;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
+import org.h2.command.dml.MergeUsing;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,15 @@ public class DashboardControllerExpensesTest {
 
         Assertions.assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
         Assertions.assertEquals(11, response.getBody().getData().getId());
+    }
+
+    @Test
+    void testCopyToNextMonth_success()throws ModelViolationException{
+
+        LocalDate mockDate = LocalDate.parse("2025-03-10");
+        var response = dashboardController.copyDataToNextMonth(mockDate);
+
+        Assertions.assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+        Assertions.assertEquals("ADD_SUCCESSFUL", response.getBody().getData().name());
     }
 }
