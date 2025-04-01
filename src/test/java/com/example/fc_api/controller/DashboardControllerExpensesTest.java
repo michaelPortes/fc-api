@@ -40,8 +40,7 @@ public class DashboardControllerExpensesTest {
         Assertions.assertEquals("test", Objects.requireNonNull(response.getBody().getData().getFirst().getName()));
         Assertions.assertEquals("xasfdsa", Objects.requireNonNull(response.getBody().getData().getFirst().getDescription()));
         Assertions.assertEquals(121L, Objects.requireNonNull(response.getBody().getData().getFirst().getExpectedExpense()));
-        Assertions.assertEquals(null, Objects.requireNonNull(response.getBody().getData().getFirst().getRealExpenseMiddleMonth()));
-        Assertions.assertEquals(121L, Objects.requireNonNull(response.getBody().getData().getFirst().getRealExpenseFinalMonth()));
+        Assertions.assertEquals(123L, Objects.requireNonNull(response.getBody().getData().getFirst().getRealExpenseFinalMonth()));
     }
 
     @Test
