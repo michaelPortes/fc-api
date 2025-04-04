@@ -1,31 +1,65 @@
 package com.example.fc_api.domains.users.entity;
 
-import com.example.fc_api.domains.common.model.AddressModel;
+import com.example.fc_api.controller.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-@Validated
+import java.util.Collection;
+import java.util.List;
+
+@Table(name = "users")
+@Entity(name = "users")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@Entity
-@Table(name = "users")
-public class UsersEntity {
+@EqualsAndHashCode(of = "id")
+public class UsersEntity implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+    private String login;
+    private String password;
+    private UserRole roles;
 
-    @NotNull
-    private String name;
+    public UsersEntity(String login, String password, UserRole role){
+        this.login = login;
+        this.password = password;
+        this.roles = role;
+    }
 
-    @NotNull
-    private Boolean active;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
 
-    @Embedded
-    private AddressModel address;
+        if(this.roles == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
 
+    @Override
+    public String getUsername() {
+        return login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
