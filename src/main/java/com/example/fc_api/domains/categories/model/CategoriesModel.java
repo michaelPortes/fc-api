@@ -36,7 +36,6 @@ public class CategoriesModel {
 
     public static CategoriesModel fromInputDTO(InsertCategoriesDTO categoriesDTO) throws ModelViolationException{
         return CategoriesModel.builder()
-                .id(categoriesDTO.getId())
                 .name(categoriesDTO.getName())
                 .build();
     }

@@ -1,9 +1,7 @@
 package com.example.fc_api.domains.categories.entity;
 
 import com.example.fc_api.domains.categories.model.CategoriesModel;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -16,14 +14,13 @@ import lombok.*;
 public class CategoriesEntity{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
     private String name;
 
     public void updateCategories(CategoriesModel categoriesModel){
-
-        this.id = categoriesModel.getId();
         this.name = categoriesModel.getName();
 
     }
