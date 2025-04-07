@@ -6,10 +6,7 @@
         <include file="db/migrations/v00-setup.sql"/>
         <include file="db/migrations/v01-create-table-categories.sql"/>
         <include file="db/migrations/v02-create-table-users.sql"/>
-        <include file="db/migrations/v03-create-table-launch.sql"/>
-        <include file="db/migrations/v04-create-table-fixed_expenses.sql"/>
-        <include file="db/migrations/v05-create-table-variable_expenses.sql"/>
-        <include file="db/migrations/v06-create-table-salary.sql"/>
-        <include file="db/migrations/v07-alter-table-expenses.sql"/>
+        <include file="db/migrations/v03-create-table-expenses.sql"/>
+        <include file="db/migrations/v04-create-table-salary.sql"/>
 
 </databaseChangeLog>

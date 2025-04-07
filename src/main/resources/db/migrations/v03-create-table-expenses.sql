@@ -1,8 +1,8 @@
-CREATE TABLE IF NOT EXISTS variable_expenses (
+CREATE TABLE IF NOT EXISTS expenses (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    expected_expense BIGINT NOT NULL,
+    expense BIGINT NOT NULL,
     real_expense_middle_month BIGINT,
     real_expense_final_month BIGINT,
     category_id BIGINT NOT NULL,
