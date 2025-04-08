@@ -6,9 +6,9 @@ spring:
   application:
     name: fc-api
   datasource:
-    url: jdbc:postgresql://localhost:5432/fc?currentSchema=dashboard-dev
-    username: puser
-    password: psqlpassword
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     properties:
       hibernate:
