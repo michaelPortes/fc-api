@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,14 +31,8 @@ jobs:
     if: success()
 
     steps:
-      - name: Auto-merge pull request
-        uses: "peter-evans/enable-pull-request-automerge@v3"
-        with:
-          pull-request-number: ${{ github.event.pull_request.number }}
-          merge-method: squash
-
-      - name: Merge pull request
-        uses: "peter-evans/pull-request-merge@v3"
+      - name: Enable auto-merge for PR
+        uses: peter-evans/enable-pull-request-automerge@v3
         with:
           pull-request-number: ${{ github.event.pull_request.number }}
           merge-method: squash
@@ -43,11 +41,12 @@ jobs:
     needs: automerge
     runs-on: ubuntu-latest
     if: success()
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create Pull Request from dev to qas
+      - name: Create PR from dev to qas
         if: ${{ github.base_ref == 'dev' }}
         uses: peter-evans/create-pull-request@v6
         with:
@@ -56,8 +55,9 @@ jobs:
           commit-message: 'chore: promote dev to qas'
           base: qas
           branch: dev
+          body: 'This PR promotes changes from dev to qas.'
 
-      - name: Create Pull Request from qas to main
+      - name: Create PR from qas to main
         if: ${{ github.base_ref == 'qas' }}
         uses: peter-evans/create-pull-request@v6
         with:
@@ -66,3 +66,4 @@ jobs:
           commit-message: 'chore: promote qas to main'
           base: main
           branch: qas
+          body: 'This PR promotes changes from qas to main.'
