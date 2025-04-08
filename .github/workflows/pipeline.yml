@@ -1,18 +1,8 @@
-# .github/workflows/ci-cd.yml
-
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
-      - dev
-      - qas
   pull_request:
-    branches:
-      - main
-      - dev
-      - qas
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
@@ -25,19 +15,54 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'corretto'
           java-version: '21'
+          distribution: 'temurin'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v4
+      - name: Build and test with Maven
+        run: mvn clean verify
+
+  automerge:
+    needs: build
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Auto-merge pull request
+        uses: "peter-evans/enable-pull-request-automerge@v3"
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: squash
 
-      - name: Build with Maven
-        run: mvn -B clean install
+      - name: Merge pull request
+        uses: "peter-evans/pull-request-merge@v3"
+        with:
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: squash
 
-      - name: Run tests
-        run: mvn test
+  create-next-pr:
+    needs: automerge
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request from dev to qas
+        if: ${{ github.base_ref == 'dev' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: 'Automated PR: dev to qas'
+          commit-message: 'chore: promote dev to qas'
+          base: qas
+          branch: dev
+
+      - name: Create Pull Request from qas to main
+        if: ${{ github.base_ref == 'qas' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: 'Automated PR: qas to main'
+          commit-message: 'chore: promote qas to main'
+          base: main
+          branch: qas
