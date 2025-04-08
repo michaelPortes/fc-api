@@ -1,0 +1,51 @@
+name: Build and Deploy Java App
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - qas
+
+env:
+  CLOUD: aws
+  VERSION: "21"
+  TARGET_NAME: "opv-api"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout cloud-templates repository
+        uses: actions/checkout@v4
+        with:
+          repository: cloud-devops/cloud-templates
+          ref: refs/tags/v2.2.0
+          path: cloud-templates
+
+      - name: Set environment variable for account_id
+        run: echo "ACCOUNT_ID=account_${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.VERSION }}
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Deploy to Kubernetes
+        run: |
+          kustomize build ./k8s-kustomize | kubectl apply -f -
+
