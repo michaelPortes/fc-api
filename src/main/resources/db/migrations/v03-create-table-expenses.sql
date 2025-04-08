@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS expenses (
     real_expense_final_month BIGINT,
     category_id BIGINT NOT NULL,
     reference_date DATE NOT NULL,
+    type TEXT NOT NULL,
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
