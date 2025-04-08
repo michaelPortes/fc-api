@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
+@Entity(name = "expenses")
 @Table(name = "expenses")
 @Builder
 public class ExpensesEntity {
@@ -43,7 +43,7 @@ public class ExpensesEntity {
     private CategoriesEntity category;
 
     @NotNull
-    @Column(name = "reference_date ")
+    @Column(name = "reference_date")
     private LocalDate currentDate;
 
     @NotNull
