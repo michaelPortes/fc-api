@@ -29,12 +29,10 @@ public class SalaryUseCases {
         ).toList();
     }
 
-    public SalaryDTO insertSalary(InsertSalaryDTO insert) throws ModelViolationException{
+    public void insertSalary(InsertSalaryDTO insert) throws ModelViolationException{
 
         var variable = SalaryModel.fromInputVariable(insert);
-        var responseData = salaryDataAccess.upsertSalary(variable);
-
-        return SalaryDTO.fromModel(responseData).toBuilder().build();
+        salaryDataAccess.upsertSalary(variable);
     }
 
    public SalaryDTO deleteSalary(Long variableModel) throws ModelViolationException{
