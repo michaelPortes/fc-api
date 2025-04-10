@@ -3,9 +3,11 @@ package com.example.fc_api.domains.salary.repository;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.salary.entity.SalaryEntity;
 import com.example.fc_api.domains.salary.model.SalaryModel;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,16 +27,22 @@ public class SalaryDataAccess {
         }).toList();
     }
 
-    public SalaryModel upsertSalary(SalaryModel salaryModel) throws ModelViolationException{
+    @Transactional
+    public void upsertSalary(SalaryModel salaryModel) throws ModelViolationException{
 
-        SalaryEntity salaryEntity;
+        var getSalary = getSalaryList(salaryModel.getCurrentDate());
 
-        salaryEntity = SalaryEntity.builder().build();
-        salaryEntity.upsertVariable(salaryModel);
+        if(getSalary.isEmpty()){
+            SalaryEntity salaryEntity;
 
-        var createVariable = salaryRepository.save(salaryEntity);
+            salaryEntity = SalaryEntity.builder().build();
+            salaryEntity.upsertVariable(salaryModel);
 
-        return SalaryModel.fromEntity(createVariable);
+            salaryRepository.save(salaryEntity);
+        }else{
+
+            salaryRepository.updateSalaryExist(salaryModel.getCurrentDate(), BigInteger.valueOf(salaryModel.getSalary()));
+        }
     }
 
     public List<SalaryModel> getSalaryBetweenDates(LocalDate sixMonthAgo, LocalDate currentDate){
