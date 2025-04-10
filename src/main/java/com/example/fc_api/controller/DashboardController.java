@@ -153,9 +153,9 @@ public class DashboardController {
                 .currentDate(salaryPostParam.getCurrentDate())
                 .build();
 
-        var responseDate = salaryUseCases.insertSalary(variableItem);
+        salaryUseCases.insertSalary(variableItem);
 
-        return new ResponseBuilder<SalaryDTO>(HttpStatusCode.valueOf(200), responseDate).build();
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/salary/delete")
