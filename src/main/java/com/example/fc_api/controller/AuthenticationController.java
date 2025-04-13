@@ -49,4 +49,15 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        String subject = tokenService.validateToken(token);
+
+        if (!subject.isEmpty()) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(401).build();
+        }
+    }
 }
