@@ -32,6 +32,7 @@ public class ExpensesUseCases {
                     .expectedExpense(entity.getExpenses())
                     .realExpenseMiddleMonth(entity.getRealExpenseMiddleMonth())
                     .realExpenseFinalMonth(entity.getRealExpenseFinalMonth())
+                    .category(entity.getCategory().getId())
                     .type(entity.getType())
                     .build()
         ).toList();

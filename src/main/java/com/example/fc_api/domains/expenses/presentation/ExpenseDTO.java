@@ -14,7 +14,8 @@ public class ExpenseDTO {
     private String description;
     private Long expectedExpense;
     private Long realExpenseMiddleMonth;
-    private Long realExpenseFinalMonth;
+    private Long realExpenseFinalMonth;4
+    private Long category;
     private String type;
 
 
@@ -26,6 +27,7 @@ public class ExpenseDTO {
                 .expectedExpense(expenseModel.getExpenses())
                 .realExpenseMiddleMonth(expenseModel.getRealExpenseMiddleMonth())
                 .realExpenseFinalMonth(expenseModel.getRealExpenseFinalMonth())
+                .category(expenseModel.getCategory().getId())
                 .type(expenseModel.getType())
                 .build();
     }
