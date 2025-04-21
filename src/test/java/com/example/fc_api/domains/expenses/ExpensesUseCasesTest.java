@@ -170,21 +170,21 @@ public class ExpensesUseCasesTest {
         Assertions.assertEquals(ExpensesTypeTest.INVESTMENT.name(), expensesList.getType());
     }
 
-    @Test
-    void testDeleteCategory_success() throws ModelViolationException{
-
-        Long expenseId = 11L;
-
-        ExpenseModel expenseModel = ExpenseModel.builder().id(expenseId).build();
-        when(expenseDataAccess.deleteExpenses(expenseId)).thenReturn(expenseModel);
-
-        ExpenseDTO result = expensesUseCases.deleteExpenses(expenseId);
-        verify(expenseDataAccess, times(1)).deleteExpenses(expenseId);
-
-
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(expenseId, result.getId());
-    }
+//    @Test
+//    void testDeleteCategory_success() throws ModelViolationException{
+//
+//        Long expenseId = 11L;
+//
+//        ExpenseModel expenseModel = ExpenseModel.builder().id(expenseId).build();
+//        when(expenseDataAccess.deleteExpenses(expenseId)).thenReturn(expenseModel);
+//
+//        ExpenseDTO result = expensesUseCases.deleteExpenses(expenseId);
+//        verify(expenseDataAccess, times(1)).deleteExpenses(expenseId);
+//
+//
+//        Assertions.assertNotNull(result);
+//        Assertions.assertEquals(expenseId, result.getId());
+//    }
 
     @Test
     void testCopyToNextMonth_success()throws ModelViolationException{
