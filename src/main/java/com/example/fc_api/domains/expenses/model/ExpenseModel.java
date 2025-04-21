@@ -3,15 +3,19 @@ package com.example.fc_api.domains.expenses.model;
 
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
+import com.example.fc_api.domains.categories.model.CategoriesModel;
 import com.example.fc_api.domains.expenses.entity.ExpensesEntity;
 import com.example.fc_api.domains.expenses.input.InsertExpenseDTO;
+import com.example.fc_api.domains.expenses.input.UpdateExpenseDTO;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Builder(builderClassName = "ExpensesModelBuilder", toBuilder = true)
 @Getter
+@Setter
 public class ExpenseModel {
 
     public Long id;
@@ -62,6 +66,18 @@ public class ExpenseModel {
                 .type(insert.getType())
                 .build();
 
+    }
+
+    public static ExpenseModel fromUpdateExpenses(UpdateExpenseDTO update, ExpenseModel existing) {
+        existing.setName(update.getName());
+        existing.setDescription(update.getDescription());
+        existing.setExpenses(update.getExpectedExpense());
+        existing.setRealExpenseMiddleMonth(update.getRealExpenseMiddleMonth());
+        existing.setRealExpenseFinalMonth(update.getRealExpenseFinalMonth());
+        existing.setCategory(update.getCategory());
+        existing.setCurrentDate(update.getCurrentDate());
+        existing.setType(update.getType());
+        return existing;
     }
 
     public static ExpenseModel deleteExpenses(Long delete) throws ModelViolationException{

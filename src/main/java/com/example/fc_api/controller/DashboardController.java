@@ -13,6 +13,7 @@ import com.example.fc_api.domains.categories.presentation.CategoriesDTO;
 import com.example.fc_api.domains.common.model.CommonUseCases;
 import com.example.fc_api.domains.expenses.ExpensesUseCases;
 import com.example.fc_api.domains.expenses.input.InsertExpenseDTO;
+import com.example.fc_api.domains.expenses.input.UpdateExpenseDTO;
 import com.example.fc_api.domains.expenses.presentation.ExpenseDTO;
 import com.example.fc_api.domains.result.ResultUseCases;
 import com.example.fc_api.domains.salary.SalaryUseCases;
@@ -96,6 +97,32 @@ public class DashboardController {
         return new ResponseBuilder<MessageCodes>(HttpStatusCode.valueOf(200), responseData).build();
     }
 
+    @PutMapping("/expense/update")
+    public ResponseEntity<ResponseBody<ExpenseDTO>> upDateExpenseItem(
+            @RequestParam(value = "id", required = true) Long id,
+            @RequestBody ExpensesPostParam fixedPostParam
+    ) throws ModelViolationException{
+
+        var updateItem = UpdateExpenseDTO.builder()
+                .id(id)
+                .name(fixedPostParam.getName())
+                .description(fixedPostParam.getDescription())
+                .expectedExpense(fixedPostParam.getExpectedExpense())
+                .realExpenseMiddleMonth(fixedPostParam.getRealExpenseMiddleMonth())
+                .realExpenseFinalMonth(fixedPostParam.getRealExpenseFinalMonth())
+                .category(
+                        fixedPostParam.getCategory() != null ?
+                                CategoriesEntity.builder().id(fixedPostParam.getCategory().getId()).build() :
+                                null
+                )
+                .currentDate(fixedPostParam.getCurrentDate())
+                .type(fixedPostParam.getType())
+                .build();
+
+        var responseData = expensesUseCases.updateExpenses(updateItem);
+
+        return new ResponseBuilder<ExpenseDTO>(HttpStatusCode.valueOf(200), responseData).build();
+    }
 
     @PostMapping("/expense/insert")
     public ResponseEntity<ResponseBody<ExpenseDTO>> insertExpenses(
