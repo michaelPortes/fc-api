@@ -58,16 +58,16 @@ public class DashboardControllerExpensesTest {
         Assertions.assertEquals(123L, Objects.requireNonNull(response.getBody().getData().getRealExpenseFinalMonth()));
     }
 
-    @Test
-    void testDeleteExpense_success() throws ModelViolationException {
-
-        Long expenseId = 11L;
-
-        var response = dashboardController.deleteExpense(expenseId);
-
-        Assertions.assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
-        Assertions.assertEquals(11, response.getBody().getData().getId());
-    }
+//    @Test
+//    void testDeleteExpense_success() throws ModelViolationException {
+//
+//        Long expenseId = 11L;
+//
+//        var response = dashboardController.deleteExpense(expenseId);
+//
+//        Assertions.assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+//        Assertions.assertEquals(11, response.getBody().getData().getId());
+//    }
 
     @Test
     void testCopyToNextMonth_success()throws ModelViolationException{

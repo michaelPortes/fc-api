@@ -14,7 +14,7 @@ public class ExpenseDTO {
     private String description;
     private Long expectedExpense;
     private Long realExpenseMiddleMonth;
-    private Long realExpenseFinalMonth;4
+    private Long realExpenseFinalMonth;
     private Long category;
     private String type;
 
