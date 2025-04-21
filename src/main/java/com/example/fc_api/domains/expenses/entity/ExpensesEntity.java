@@ -50,6 +50,7 @@ public class ExpensesEntity {
     private String type;
 
     public void upsertExpenses(ExpenseModel expenseModel){
+        this.id = expenseModel.getId();
         this.name = expenseModel.getName();
         this.description = expenseModel.getDescription();
         this.expense = expenseModel.getExpenses();
