@@ -3,6 +3,7 @@ package com.example.fc_api.domains.expenses;
 import com.example.fc_api.custon.exception.ModelViolationException;
 import com.example.fc_api.domains.categories.entity.CategoriesEntity;
 import com.example.fc_api.domains.expenses.input.InsertExpenseDTO;
+import com.example.fc_api.domains.expenses.input.UpdateExpenseDTO;
 import com.example.fc_api.domains.expenses.model.ExpenseModel;
 import com.example.fc_api.domains.expenses.presentation.ExpenseDTO;
 import com.example.fc_api.domains.expenses.repository.ExpenseDataAccess;
@@ -41,6 +42,20 @@ public class ExpensesUseCases {
 
         var newExpenses = ExpenseModel.fromInputExpenses(insert);
         var responseData = expenseDataAccess.upsertExpenses(newExpenses);
+
+        return ExpenseDTO.fromModel(responseData).toBuilder().build();
+    }
+
+    public ExpenseDTO updateExpenses(UpdateExpenseDTO update) throws ModelViolationException {
+        // Busca a despesa existente pelo ID
+        var existingExpense = expenseDataAccess.findById(update.getId())
+                .orElseThrow(() -> new ModelViolationException("Despesa não encontrada", "Despesa não encontrada"));
+
+        // Atualiza os campos da despesa existente com os novos valores
+        var updatedExpense = ExpenseModel.fromUpdateExpenses(update, existingExpense);
+
+        // Salva as alterações
+        var responseData = expenseDataAccess.upsertExpenses(updatedExpense);
 
         return ExpenseDTO.fromModel(responseData).toBuilder().build();
     }
